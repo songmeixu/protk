@@ -163,7 +163,7 @@ class Unit(object):
         for entry in self.options.suffixes:
             self.soundData[entry] = False
             self.headersToAdd[entry] = False
-            
+             
         #set which headers to add to which - sorry this is so long
         self.headersToAdd[".Sound_RW"] = []
         self.headersToAdd[".Intensity_RW"] = []

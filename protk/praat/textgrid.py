@@ -158,6 +158,7 @@ class Interval():
         self.xmax = 0.0
         self.text = None
         self.extra = {}
+        self.type = type
         self.parse()
         
     def parse(self):
@@ -168,8 +169,6 @@ class Interval():
                 continue
             
             tokens = [z.strip() for z in line.split('=')]
-            
-            print tokens
             
             if tokens[0] == 'xmin':
                 self.xmin = float(tokens[1])
@@ -182,4 +181,16 @@ class Interval():
                     self.extra[tokens[0].strip("!")] = tokens[1]
                 else:
                     self.extra[tokens[0].strip("!")] = tokens[0]
-
+                    
+        print self
+                    
+    def __str__(self):
+        
+        s = "<Interval: %s; %.3f < x < %.3f; '%s'; " % (self.type,self.xmin,self.xmax,self.text)
+        if len(self.extra) != 0:
+            s += "{ "
+            for x,y in self.extra.iteritems():
+                s += " %s:%s; " % (x,y)
+            s += "} "
+        s += ">"
+        return s
