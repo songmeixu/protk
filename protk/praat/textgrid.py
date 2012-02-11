@@ -6,6 +6,9 @@ Created on Jan 23, 2012
 
 import re
 
+import core.db
+from core.db.types import *
+
 class TextGrid():
     
     def __init__(self, filename):
@@ -100,7 +103,22 @@ class TextGrid():
         for tier in tiers:
             self.tiers.append(IntervalTier(lines[tier[0]:tier[1]]))
             
-        
+    def add_to_db(self, session, truth=False):
+        audio_file = AudioFile("/Users/jacobokamoto/Developer/work/c3n/SALSA/backend/SALSA-UIMA/data/a-b-c-d-e-f.wav")
+        session.add(audio_file)
+        session.commit()
+        collection = ProsodyCollection(audio_file, truth=truth, extdata=None)
+        session.add(collection)
+        session.commit()
+        for tier_data in self.tiers:
+            tier = ProsodyTier(collection, tier_data.type, tier_data.metadata)
+            session.add(tier)
+            session.commit()
+            for ival in tier_data.intervals:
+                ival = ProsodyData(tier,ival.xmin,ival.xmax,ival.text,ival.extra)
+                session.add(ival)
+            session.commit()
+    
 class IntervalTier():
     
     def __init__(self,lines):

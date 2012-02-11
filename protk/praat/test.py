@@ -8,7 +8,9 @@ from textgrid import TextGrid
 
 print "Hello"
 
-t = TextGrid("C:/Users/jacobokamoto/Developer/c3n/protk/work/truth/tmp.txtgrid")
+t = TextGrid("/Users/jacobokamoto/Developer/work/c3n/protk/work/truth/tmp.txtgrid")
+
+t.add_to_db()
 """
 for tier in t.tiers:
     print tier.type
