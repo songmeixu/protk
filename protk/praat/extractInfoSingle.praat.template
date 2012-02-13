@@ -6,37 +6,37 @@
 # version 09/29/2010
 
 form Files
-sentence InputDir /Users/jacobokamoto/Desktop/testdata/
-sentence Ifile test
-boolean PointProcessCC_RW 1
-boolean PointProcessExtrema_RW 1
-boolean PointProcessPeaks_RW 1
-boolean PointProcessZeros_RW 1
-boolean HarmonicityAC_RW 1
-boolean HarmonicityCC_RW 1
-boolean FormantSL_RW 1
-boolean FormantBurg_RW 1
-boolean LPCac_RW 1
-boolean LPCBurg_RW 1
-boolean LPCCovariance_RW 1
-boolean LPCMarple_RW 1
-boolean Silences_RW 1
-boolean Intensity_RW 1
-boolean MFCC_RW 1
-boolean JitterLocal_RW 1
-boolean JitterLocalAbsolute_RW 1
-boolean JitterPPQ5_RW 1
-boolean JitterRap_RW 1
-boolean JitterDDP_RW 1
-boolean ShimmerAPQ3_RW 1
-boolean ShimmerAPQ5_RW 1
-boolean ShimmerAPQ11_RW 1
-boolean ShimmerLocal_RW 1
-boolean ShimmerLocalDB_RW 1
-boolean Pitch_RW 1
-boolean PitchAC_RW 1
-boolean PitchCC_RW 1
-boolean PitchSHS_RW 1
+sentence InputDir <<inputdir>>
+sentence Ifile <<inputfile>>
+boolean PointProcessCC_RW <<ppcc>>
+boolean PointProcessExtrema_RW <<ppext>>
+boolean PointProcessPeaks_RW <<pppeak>>
+boolean PointProcessZeros_RW <<ppzero>>
+boolean HarmonicityAC_RW <<harmac>>
+boolean HarmonicityCC_RW <<harmcc>>
+boolean FormantSL_RW <<formsl>>
+boolean FormantBurg_RW <<formburg>>
+boolean LPCac_RW <<lpcac>>
+boolean LPCBurg_RW <<lpcburg>>
+boolean LPCCovariance_RW <<lpccovar>>
+boolean LPCMarple_RW <<lpcmarp>>
+boolean Silences_RW <<sil>>
+boolean Intensity_RW <<intens>>
+boolean MFCC_RW <<mfcc>>
+boolean JitterLocal_RW <<jitloc>>
+boolean JitterLocalAbsolute_RW <<jitlocabs>>
+boolean JitterPPQ5_RW <<jitppq5>>
+boolean JitterRap_RW <<jitrap>>
+boolean JitterDDP_RW <<jitddp>>
+boolean ShimmerAPQ3_RW <<shimapq3>>
+boolean ShimmerAPQ5_RW <<shimapq5>>
+boolean ShimmerAPQ11_RW <<shimapq11>>
+boolean ShimmerLocal_RW <<shimloc>>
+boolean ShimmerLocalDB_RW <<shimlocdb>>
+boolean Pitch_RW <<pitch>>
+boolean PitchAC_RW <<pitchac>>
+boolean PitchCC_RW <<pitchcc>>
+boolean PitchSHS_RW <<pitchshs>>
 boolean Sound_RW 0
 endform
 
@@ -47,7 +47,7 @@ endform
 
 Read from file... 'inputDir$'/wav/'ifile$'.wav
 name$ = ifile$
-outputDir$ = inputDir$ - "wav/" + "praatOutput/" + name$ + "_Short/"
+outputDir$ = inputDir$ - "wav/" + "praat_output/" + name$ + "_analysis/"
 
 
 

@@ -1,10 +1,3 @@
-# This script takes all the files in the specified directory,
-# and outputs text files with all sorts of information.
-# InputDir is the original folder;
-# OutputDir is a new folder in which the modified files are stored;
-# Author: Thomas Christie (with help from Shigeto Kawahara)
-# version 09/29/2010
-
 form Files
 sentence InputDir /Users/jacobokamoto/Desktop/testdata/
 sentence Ifile test
@@ -47,7 +40,7 @@ endform
 
 Read from file... 'inputDir$'/wav/'ifile$'.wav
 name$ = ifile$
-outputDir$ = inputDir$ - "wav/" + "praatOutput/" + name$ + "_Short/"
+outputDir$ = inputDir$ - "wav/" + "praat_output/" + name$ + "_analysis/"
 
 
 
@@ -607,9 +600,6 @@ select Sound 'name$'
 To Intensity... 100 0 yes
 Write to short text file... 'outputDir$''name$'.Intensity
 endif
-
-# then remove all the objects except the strings list
-# so praat isn’t all cluttered up
 
 select all
 Remove

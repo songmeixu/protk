@@ -52,17 +52,33 @@ def get_session(dbconf):
     return Session()
 
 from types import *
-def dump_data(session):
-    files = session.query(AudioFile)
-    for file in files:
-        print file.filename
-        collections = session.query(ProsodyCollection).filter_by(audio_file=file.id)
-        for collection in collections:
-            print "> Collection:", "truth" if collection.collection_type == ProsodyCollection.Types.Truth else "training"
-            tiers = session.query(ProsodyTier).filter_by(collection=collection.id)
-            for tier in tiers:
-                print ">> Tier:", tier.tier_type
-                ivals = session.query(ProsodyData).filter_by(tier=tier.id)
-                for ival in ivals:
-                    print ">>> Interval: %f to %f sec; content: %s" % (ival.xmin,ival.xmax,ival.value)
-                    
+              
+class DatabaseManager(object):
+    
+    def __init__(self, configuration):
+        self.configuration = configuration
+        self.engine = get_engine(configuration)
+        self.sessionmaker = sessionmaker()
+        create_db(self.engine)
+        self.sessionmaker.configure(bind=self.engine)
+        self.session = None
+        
+    def get_session(self):
+        if self.session == None:
+            self.session = self.sessionmaker()
+        return self.session
+    
+    def dump_data(self):
+        print "Dumping all data from database"
+        files = self.session.query(AudioFile)
+        for file in files:
+            print "[file]> %s" % file.filename
+            collections = self.session.query(ProsodyCollection).filter_by(audio_file=file.id)
+            for collection in collections:
+                print "[prosody]> Collection:", "truth" if collection.collection_type == ProsodyCollection.Types.Truth else "training"
+                tiers = self.session.query(ProsodyTier).filter_by(collection=collection.id)
+                for tier in tiers:
+                    print "[prosody]>> Tier:", tier.tier_type
+                    ivals = self.session.query(ProsodyData).filter_by(tier=tier.id)
+                    for ival in ivals:
+                        print "[prosody]>>> Interval: %f to %f sec; content: %s" % (ival.xmin,ival.xmax,ival.value)

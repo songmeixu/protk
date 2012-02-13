@@ -1,8 +1,4 @@
-import os
-PROTK_DEBUG=False
-if os.environ.has_key("PROTK_DEBUG"):
-    PROTK_DEBUG = True
-
+import config
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Text, UniqueConstraint
 
@@ -31,7 +27,7 @@ class AudioFile(Base):
             self.duration = float(fr) / float(sr)
             self.filedata = pickle.dumps(filedata)
             
-            if PROTK_DEBUG:
+            if config.PROTK_DEBUG:
                 print("DEBUG[db.types.AudioFile]> Audio file processed")
                 print("DEBUG[db.types.AudioFile]>  - File type: %s" % filedata[0])
                 print("DEBUG[db.types.AudioFile]>  - Sample rate: %s" % filedata[1])
@@ -46,6 +42,7 @@ class ProsodyCollection(Base):
     class Types:
         Truth = 0
         Training = 1
+        Passthrough = 2
     
     __tablename__ = 'prosody_collection'
     
@@ -58,14 +55,17 @@ class ProsodyCollection(Base):
     collection_type = Column(Integer)
     
     extdata = Column(Text)
-
-    def __init__(self, audio_file, truth=False, extdata=None):
+    
+    def __init__(self, audio_file, truth=False, passthrough=False, extdata=None):
         self.audio_file = audio_file.id
         self.extdata = pickle.dumps(extdata)
         if truth:
             self.collection_type = ProsodyCollection.Types.Truth
         else:
-            self.collection_type = ProsodyCollection.Types.Training
+            if not passthrough:
+                self.collection_type = ProsodyCollection.Types.Training
+            else:
+                self.collection_type = ProsodyCollection.Types.Passthrough
 
 class ProsodyTier(Base):
     

@@ -9,7 +9,13 @@ import re
 import core.db
 from core.db.types import *
 
-class TextGrid():
+class ProsodyReader():
+    def parse(self):
+        pass
+    def add_to_db(self,session,truth=False):
+        pass
+
+class TextGrid(ProsodyReader):
     
     def __init__(self, filename):
         self.filename = filename
@@ -20,7 +26,7 @@ class TextGrid():
         self.tiers = []
         self.parse()
         
-    def parse(self):
+    def parse(self,ignore_tiers=[]):
         
         f = None
         
