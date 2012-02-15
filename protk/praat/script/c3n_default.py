@@ -9,8 +9,7 @@ Praat script generation module
 from core.fs import get_filenames
 from praat.script.c3n_script import C3N_PRAAT_SCRIPT,C3N_PRAAT_DEFAULT_OPTIONS,C3N_PRAAT_PRAAT_OPTIONS
 
-import os,sys,shutil,thread
-
+import os,sys,shutil,time,subprocess,multiprocessing
 class C3NPraatProcessor:
     import c3n_script
     def generate_script(self, input_file):
@@ -38,42 +37,59 @@ class C3NPraatProcessor:
         print "[praat][script][execute]> Starting script execution"
         scripts = get_filenames(self.script_dir)
         scripts = [self.script_dir+i for i in scripts]
-        #for script in scripts:
-        #    cmd = self.praatOptions["binary"]+" '"+script+"' "+self.praatOptions["options"]
-        #    print "[praat][script][execute]> Running script '%s'" % script
-        #    os.system(cmd)
-        #    print "[praat][script][execute]> ...completed."
-        
         num = len(scripts)
         
-        for i in range(0,num,4):
-            if i < num: thread.start_new_thread(self.run_script, (scripts[i],))
-            if i+1 < num: thread.start_new_thread(self.run_script, (scripts[i+1],))
-            if i+2 < num: thread.start_new_thread(self.run_script, (scripts[i+2],))
-            if i+3 < num: thread.start_new_thread(self.run_script, (scripts[i+3],))
+        # Iterate through the scripts and spawn as many worker processes
+        # as there are CPUs reported by the multiprocessing module
         
-    def run_script(self,script):
-        cmd = self.praatOptions["binary"]+" '"+script+"' "+self.praatOptions["options"]
-        print "[praat][script][execute]> Running script '%s'" % script
-        os.system(cmd)
-        print "[praat][script][execute]> ...completed."
+        active_processes = set()    # Active processes tracking variable
+        max_processes = multiprocessing.cpu_count() # CPU count determines max processes
+        binary = self.praatOptions["binary"] # get the binary used with Praat
+        
+        print "[praat][script]> Using Praat binary at '%s'" % binary
+        
+        
+        for script in scripts:
+            active_processes.add(subprocess.Popen([binary,script]))
+            print "[praat][script][exec]> Spawning Praat processor with script '%s'" % script
+            if len(active_processes) >= max_processes:
+                os.wait()
+                print "[praat][script][exec]> Subprocess completed."
+                active_processes.difference_update([p for p in active_processes if p.poll() is not None])
+                
+        while True:
+            try:
+                os.wait()
+                print "[praat][script][exec]> Subprocess completed."
+            except:
+                print "[praat][script][exec]> All processes completed"
+                break
+            
         
     def __init__(self, input_dir, script_dir, output_dir, options=None, praatOptions=None):
-        
+        # Fix directory paths (all with trailing slash)
         self.input_dir = input_dir+'/' if input_dir[-1]!='/' else input_dir
         self.output_dir = output_dir+'/' if output_dir[-1]!='/' else output_dir
         self.script_dir = script_dir+'/' if script_dir[-1]!='/' else script_dir
+        
+        # initialize instance vars
         self.options = None
         self.praatOptions = None
+        
+        # set default Praat options if none provided
         if praatOptions != None: self.praatOptions = praatOptions
         else: self.praatOptions = C3N_PRAAT_PRAAT_OPTIONS
         self.input_files = None
-        self.command_opts = ""
+        self.command_opts = ""  # vestigial?
+        
         if not options:
+            # also vestigial?
             self.options = C3N_PRAAT_DEFAULT_OPTIONS
             for option,value in self.options.iteritems():
                 self.command_opts += " "+option+('1' if value else '0')
             print self.command_opts
+            
+            # load input file list
             try:
                 input_files = get_filenames(input_dir, ".wav")
                 self.input_files = []
@@ -81,13 +97,19 @@ class C3NPraatProcessor:
                     self.input_files.append((f,(f.split(".")[0].replace(' ','_'))))
             except:
                 raise Exception("[praat][init]> ERROR: Input directory does not exist.")
+            
+            # make generated script directory
             if not os.path.exists(self.script_dir):
                 os.makedirs(self.script_dir, 0775)
                 print "[praat][init]> Created script directory '%s'" % self.script_dir
             elif not os.path.isdir(self.script_dir):
                 raise OSError("[praat][init]> Script path does not point to a directory '%s'" % self.script_dir)
             else:
-                print "[praat][init]> Using script directory '%s'" % self.script_dir
+                shutil.rmtree(self.script_dir)
+                os.makedirs(self.script_dir, 0775)
+                print "[praat][init]> Using script directory '%s' (cleaned)" % self.script_dir
+            
+            # make output data directory
             if not os.path.exists(self.output_dir):
                 os.makedirs(self.output_dir, 0775)
                 print "[praat][init]> Created output directory '%s'" % self.output_dir
