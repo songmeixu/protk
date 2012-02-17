@@ -5,7 +5,7 @@ import db
 import db.types
 from db.types import *
 
-dbconf = {'driver':'sqlite3','name':'/Users/jacobokamoto/Desktop/sqlite.db'}
+dbconf = {'driver':'sqlite3','name':'C:/Users/jacobokamoto/Desktop/sqlite.db'}
 
 try:
     
@@ -15,7 +15,7 @@ try:
         print str(af.filename)
     
     print("db.get_session(%s) --> %s" % (str(dbconf),str(q)))
-    a = AudioFile("/Users/jacobokamoto/Developer/work/c3n/SALSA/backend/SALSA-UIMA/data/a-b-c-d-e-f.wav")
+    a = AudioFile("C:/Users/jacobokamoto/Developer/work/c3n/SALSA/backend/SALSA-UIMA/data/a-b-c-d-e-f.wav")
     
     q.add(a)
     q.commit()

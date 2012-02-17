@@ -36,15 +36,15 @@ def bulk_open_from_dir(directory,lines=True):
     
     files = {}
     
-    for file in contents:
+    for fl in contents:
         try:
-            contents = os.listdir(directory+"/"+file)
+            contents = os.listdir(directory+"/"+fl)
         except:
-            f = open(directory+"/"+file)
+            f = open(directory+"/"+fl)
             if lines:
-                files[file] = f.readlines()
+                files[fl] = f.readlines()
             else:
-                files[file] = f.read()
+                files[fl] = f.read()
             f.close()
     
     return files
@@ -61,4 +61,4 @@ def ls(directory):
         raise DirectoryError("Could not list directory '%s'" % (directory))
     return contents
 
-print ls("C:/Users")
+print ls("C:C:/Users")

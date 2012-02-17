@@ -62,5 +62,5 @@ class FormantSLParser(Parser):
             except:
                 break
         
-fbp = FormantBurgParser('/Users/jacobokamoto/Desktop/testdata/output/test.wav/test.FormantBurg')
+fbp = FormantBurgParser('C:/Users/jacobokamoto/Desktop/testdata/output/test.wav/test.FormantBurg')
 print fbp.parse()

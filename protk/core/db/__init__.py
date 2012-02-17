@@ -42,6 +42,9 @@ Session = sessionmaker()
 session_configured = False
 
 def get_session(dbconf):
+    """
+    Get a session hand to the current database
+    """
     global Session
     global session_configured
     if not session_configured:
@@ -67,18 +70,3 @@ class DatabaseManager(object):
         if self.session == None:
             self.session = self.sessionmaker()
         return self.session
-    
-    def dump_data(self):
-        print "Dumping all data from database"
-        files = self.session.query(AudioFile)
-        for file in files:
-            print "[file]> %s" % file.filename
-            collections = self.session.query(ProsodyCollection).filter_by(audio_file=file.id)
-            for collection in collections:
-                print "[prosody]> Collection:", "truth" if collection.collection_type == ProsodyCollection.Types.Truth else "training"
-                tiers = self.session.query(ProsodyTier).filter_by(collection=collection.id)
-                for tier in tiers:
-                    print "[prosody]>> Tier:", tier.tier_type
-                    ivals = self.session.query(ProsodyData).filter_by(tier=tier.id)
-                    for ival in ivals:
-                        print "[prosody]>>> Interval: %f to %f sec; content: %s" % (ival.xmin,ival.xmax,ival.value)
