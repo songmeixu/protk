@@ -8,7 +8,7 @@ ProTK v0.0.1-DEMONSTRATOR-DB
 
 import sys
 import os
-from core.db.types import *
+from protk.db.types import *
 
 pwd = os.environ["PWD"].strip() if os.environ.has_key("PWD") else "<unknown>"
 

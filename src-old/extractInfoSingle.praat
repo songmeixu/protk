@@ -1,9 +1,3 @@
-'''
-Created on Feb 12, 2012
-
-@author: jacobokamoto
-'''
-
 # This script takes all the files in the specified directory,
 # and outputs text files with all sorts of information.
 # InputDir is the original folder;
@@ -11,119 +5,49 @@ Created on Feb 12, 2012
 # Author: Thomas Christie (with help from Shigeto Kawahara)
 # version 09/29/2010
 
-C3N_PRAAT_PRAAT_OPTIONS = {
-                           'binary' : '/Applications/Praat.app/Contents/MacOS/Praat',
-                           'options' : '',
-                           }
-
-C3N_PRAAT_DEFAULT_OPTIONS = {
-                   'point_process_cc': (True, 'PointProcessCC', '<<ppcc>>'),
-                   'point_process_extrema': (True, 'PointProcessExtrema', '<<ppext>>'),
-                   'point_process_peaks': (True, 'PointProcessPeaks', '<<pppeak>>'),
-                   'point_process_zeros': (True, 'PointProcessZeros', '<<ppzero>>'),
-                   'harmonicity_ac': (True, 'HarmonicityAC', '<<harmac>>'),
-                   'harmonicity_cc': (True, 'HarmonicityCC', '<<harmcc>>'),
-                   'formant_sl': (True,'FormantSL', '<<formsl>>'),
-                   'formant_burg': (True,'FormantBurg', '<<formburg>>'),
-                   'lpc_ac': (True, 'LPCac', '<<lpcac>>'),
-                   'lpc_burg': (True, 'LPCBurg', '<<lpcburg>>'),
-                   'lpc_covariance': (True, 'LPCCovariance_RW', '<<lpccovar>>'),
-                   'lpc_marple': (True, 'LPCMarple_RW', '<<lpcmarp>>'),
-                   'silences': (True, 'Silences_RW', '<<sil>>'),
-                   'intensity': (True, 'Intensity_RW', '<<intens>>'),
-                   'mfcc': (True, 'MFCC_RW', '<<mfcc>>'),
-                   'jitter_local': (True, 'JitterLocal_RW', '<<jitloc>>'),
-                   'jitter_local_absolute': (True, 'JitterLocalAbsolute_RW', '<<jitlocabs>>'),
-                   'jitter_ppq5': (True, 'JitterPPQ5_RW', '<<jitppq5>>'),
-                   'jitter_rap': (True, 'JitterRap_RW', '<<jitrap>>'),
-                   'jitter_ddp': (True, 'JitterDDP_RW', '<<jitddp>>'),
-                   'shimmer_apq3': (True, 'ShimmerAPQ3_RW', '<<shimapq3>>'),
-                   'shimmer_apq5': (True, 'ShimmerAPQ5_RW', '<<shimapq5>>'),
-                   'shimmer_apq11': (True, 'ShimmerAPQ11_RW', '<<shimapq11>>'),
-                   'shimmer_local': (True, 'ShimmerLocal_RW', '<<shimloc>>'),
-                   'shimmer_local_db': (True, 'ShimmerLocalDB_RW', '<<shimlocdb>>'),
-                   'pitch': (True, 'Pitch_RW', '<<pitch>>'),
-                   'pitch_ac': (True, 'PitchAC_RW', '<<pitchac>>'),
-                   'pitch_cc': (True, 'PitchCC_RW', '<<pitchcc>>'),
-                   'pitch_shs': (True, 'PitchSHS_RW', '<<pitchshs>>'),
-                   }
-"""form Files
-sentence InputDir <<inputdir>>
-sentence Ifile <<inputfile>>
-boolean PointProcessCC_RW <<ppcc>>
-boolean PointProcessExtrema_RW <<ppext>>
-boolean PointProcessPeaks_RW <<pppeak>>
-boolean PointProcessZeros_RW <<ppzero>>
-boolean HarmonicityAC_RW <<harmac>>
-boolean HarmonicityCC_RW <<harmcc>>
-boolean FormantSL_RW <<formsl>>
-boolean FormantBurg_RW <<formburg>>
-boolean LPCac_RW <<lpcac>>
-boolean LPCBurg_RW <<lpcburg>>
-boolean LPCCovariance_RW <<lpccovar>>
-boolean LPCMarple_RW <<lpcmarp>>
-boolean Silences_RW <<sil>>
-boolean Intensity_RW <<intens>>
-boolean MFCC_RW <<mfcc>>
-boolean JitterLocal_RW <<jitloc>>
-boolean JitterLocalAbsolute_RW <<jitlocabs>>
-boolean JitterPPQ5_RW <<jitppq5>>
-boolean JitterRap_RW <<jitrap>>
-boolean JitterDDP_RW <<jitddp>>
-boolean ShimmerAPQ3_RW <<shimapq3>>
-boolean ShimmerAPQ5_RW <<shimapq5>>
-boolean ShimmerAPQ11_RW <<shimapq11>>
-boolean ShimmerLocal_RW <<shimloc>>
-boolean ShimmerLocalDB_RW <<shimlocdb>>
-boolean Pitch_RW <<pitch>>
-boolean PitchAC_RW <<pitchac>>
-boolean PitchCC_RW <<pitchcc>>
-boolean PitchSHS_RW <<pitchshs>>
+form Files
+sentence InputDir /Users/jacobokamoto/Desktop/testdata/
+sentence Ifile test
+boolean PointProcessCC_RW 1
+boolean PointProcessExtrema_RW 1
+boolean PointProcessPeaks_RW 1
+boolean PointProcessZeros_RW 1
+boolean HarmonicityAC_RW 1
+boolean HarmonicityCC_RW 1
+boolean FormantSL_RW 1
+boolean FormantBurg_RW 1
+boolean LPCac_RW 1
+boolean LPCBurg_RW 1
+boolean LPCCovariance_RW 1
+boolean LPCMarple_RW 1
+boolean Silences_RW 1
+boolean Intensity_RW 1
+boolean MFCC_RW 1
+boolean JitterLocal_RW 1
+boolean JitterLocalAbsolute_RW 1
+boolean JitterPPQ5_RW 1
+boolean JitterRap_RW 1
+boolean JitterDDP_RW 1
+boolean ShimmerAPQ3_RW 1
+boolean ShimmerAPQ5_RW 1
+boolean ShimmerAPQ11_RW 1
+boolean ShimmerLocal_RW 1
+boolean ShimmerLocalDB_RW 1
+boolean Pitch_RW 1
+boolean PitchAC_RW 1
+boolean PitchCC_RW 1
+boolean PitchSHS_RW 1
 boolean Sound_RW 0
-endform"""
+endform
 
 
-C3N_PRAAT_SCRIPT="""
 
-
-inputDir$ = "<<inputdir>>"
-ifile$ = "<<inputfile>>"
-pointProcessCC_RW = <<ppcc>>
-pointProcessExtrema_RW = <<ppext>>
-pointProcessPeaks_RW = <<pppeak>>
-pointProcessZeros_RW = <<ppzero>>
-harmonicityAC_RW = <<harmac>>
-harmonicityCC_RW = <<harmcc>>
-formantSL_RW = <<formsl>>
-formantBurg_RW = <<formburg>>
-lPCac_RW = <<lpcac>>
-lPCBurg_RW = <<lpcburg>>
-lPCCovariance_RW = <<lpccovar>>
-lPCMarple_RW = <<lpcmarp>>
-silences_RW = <<sil>>
-intensity_RW = <<intens>>
-mFCC_RW = <<mfcc>>
-jitterLocal_RW = <<jitloc>>
-jitterLocalAbsolute_RW = <<jitlocabs>>
-jitterPPQ5_RW = <<jitppq5>>
-jitterRap_RW = <<jitrap>>
-jitterDDP_RW = <<jitddp>>
-shimmerAPQ3_RW = <<shimapq3>>
-shimmerAPQ5_RW = <<shimapq5>>
-shimmerAPQ11_RW = <<shimapq11>>
-shimmerLocal_RW = <<shimloc>>
-shimmerLocalDB_RW = <<shimlocdb>>
-pitch_RW = <<pitch>>
-pitchAC_RW = <<pitchac>>
-pitchCC_RW = <<pitchcc>>
-pitchSHS_RW = <<pitchshs>>
-sound_RW = 0
 
 #### OPEN FILE ####
 
-Read from file... <<inputdir>><<inputfile>>
-name$ = "<<inputname>>"
-outputDir$ = "<<outputdir>>"
+Read from file... 'inputDir$'/wav/'ifile$'.wav
+name$ = ifile$
+outputDir$ = inputDir$ - "wav/" + "praatOutput/" + name$ + "_Short/"
 
 
 
@@ -684,7 +608,9 @@ To Intensity... 100 0 yes
 Write to short text file... 'outputDir$''name$'.Intensity
 endif
 
+# then remove all the objects except the strings list
+# so praat isn’t all cluttered up
+
 select all
 Remove
 
-"""

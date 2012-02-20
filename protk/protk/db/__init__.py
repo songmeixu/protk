@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 import types
+from types import *
 
 class DBConfError(Exception):
     pass
@@ -30,9 +31,6 @@ def get_engine(dbconf):
     else:
         raise DBDriverError("A database driver was not specified.")
 
-def create_db(engine):
-    types.Base.metadata.create_all(engine)
-
 """
 DATABASE SESSION
 """
@@ -49,12 +47,10 @@ def get_session(dbconf):
     global session_configured
     if not session_configured:
         engine = get_engine(dbconf)
-        create_db(engine)
+        #create_db(engine)
         Session.configure(bind=engine)
         session_configured=True
     return Session()
-
-from types import *
               
 class DatabaseManager(object):
     
@@ -62,7 +58,6 @@ class DatabaseManager(object):
         self.configuration = configuration
         self.engine = get_engine(configuration)
         self.sessionmaker = sessionmaker()
-        create_db(self.engine)
         self.sessionmaker.configure(bind=self.engine)
         self.session = None
         
@@ -70,3 +65,9 @@ class DatabaseManager(object):
         if self.session == None:
             self.session = self.sessionmaker()
         return self.session
+    
+    def initialize_db(self, modules):
+        if not self.engine:
+            self.engine = get_engine(self.configuration)
+        for module in modules:
+            module.create_tables(self.engine)

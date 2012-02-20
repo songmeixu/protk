@@ -26,4 +26,3 @@ def get_filenames(directory,filter_by=None):
         return new
     except:
         raise DirListError()
-

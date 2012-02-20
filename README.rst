@@ -36,3 +36,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+Features
+========
+Features that are currently implemented are listed first; unimplemented
+or incomplete features still under development are in *italics*.
+
+* Database storage of prosodic and analysis data
+* TextGrid word and phoneme tier parsing
+* Praat script generation on-the-fly for each input file
+* Praat script execution using as many CPUs as are available on the
+  system
+* *Praat analysis data extraction*
+* *Per-analysis type functions (e.g., calculation of formant rations*
+
+Usage
+=====
+The scripts for ProTK are in the ``protk`` directory in the root of the
+distribution (this will be changed once the rewrite is complete).
+
+``ingest.py``: Data ingest
+--------------------------
+``ingest.py`` is used to ingest all relevant data for a fileset (textgrids
+and audio files). It will parse the textgrids and then generate and run
+Praat analysis scripts for the audio files.
+
+Options:
+    
+* ``--audio``: **required** -- directory containing audio files
+* ``--truth``: directory containing truth textgrids
+* ``--train``: directory containing training textgrids
+* ``--script``: directory to which to output Praat scripts
+* ``--praatoutput``: directory to which to output Praat analysis data files
+
