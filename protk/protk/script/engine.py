@@ -17,8 +17,8 @@ from protk.fs.directory import noext_name,list_files
 # version 09/29/2010
 
 C3N_PRAAT_PRAAT_OPTIONS = {
-                           #'binary' : '/Applications/Praat.app/Contents/MacOS/Praat',
-                           'binary' : '/usr/bin/praat',
+                           'binary' : '/Applications/Praat.app/Contents/MacOS/Praat',
+                           #'binary' : '/usr/bin/praat',
                            'options' : '',
                            }
 

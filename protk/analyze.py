@@ -63,4 +63,10 @@ for c in cs:
     print "\n\n\n"
     words = session.query(Word).filter(Word.collection == c.id)
     for word in words:
-        print word.word, word.start, word.end
+        formants = session.query(FormantBurg).filter(FormantBurg.xmin >= word.start).filter(FormantBurg.xmax <= word.end).filter(FormantBurg.audio_file == c.audio_file)
+        s = 0.0
+        for f in formants:
+            s += f.f1_o_f2()
+        s = s / formants.count()
+        print word.word, word.start, word.end, s
+        #for f in formants: print f.audio_file, c.audio_file

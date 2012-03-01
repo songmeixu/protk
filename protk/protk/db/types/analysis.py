@@ -65,6 +65,9 @@ class FormantBurg(Base):
         self.xmax = xmax
         self.intensity = intensity
         self.audio_file = audio_file.id
+
+    def f1_o_f2(self):
+        return self.f1_freq / self.f2_freq
         
 class FormantSL(Base):
     __tablename__ = "analysis_formant_sl"

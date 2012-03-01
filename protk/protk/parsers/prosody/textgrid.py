@@ -181,7 +181,6 @@ class TextGridParser(object):
             if len(f) > 0: f.pop(0)
             
         if label.lower() == "word" and start != None and end != None and text != None:
-            print self.prosody_collection.id
             w = Word(self.prosody_collection, start, end, text, extdata)
             self.contents.append(w)
         elif label.lower() == "phone" and start != None and end != None and text != None:
