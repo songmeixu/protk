@@ -180,10 +180,11 @@ class TextGridParser(object):
                 #print("[parser][txtgrid][item]["+label+"]> + Extra: '%s' = '%s'"%(str(spl[0]),str(spl[1])))
             if len(f) > 0: f.pop(0)
             
-        if label.lower() == "word":
+        if label.lower() == "word" and start != None and end != None and text != None:
+            print self.prosody_collection.id
             w = Word(self.prosody_collection, start, end, text, extdata)
             self.contents.append(w)
-        elif label.lower() == "phone":
+        elif label.lower() == "phone" and start != None and end != None and text != None:
             p = Phone(self.prosody_collection, start, end, text, extdata)
             self.contents.append(p)
         

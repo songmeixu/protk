@@ -27,7 +27,7 @@ class Word(Base):
     extdata = Column(Text)
     
     def __init__(self, prosody_collection, start, end, word, extdata):
-        self.prosody_collection = prosody_collection.id
+        self.collection = prosody_collection.id
         self.start = start
         self.end = end
         self.word = word
@@ -52,7 +52,7 @@ class Phone(Base):
     extdata = Column(Text)
 
     def __init__(self, prosody_collection, start, end, phone, extdata):
-        self.prosody_collection = prosody_collection.id
+        self.collection = prosody_collection.id
         self.start = start
         self.end = end
         self.phone = phone

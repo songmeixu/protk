@@ -5,15 +5,15 @@ Created on Feb 16, 2012
 '''
 from protk.db import Base
 from sqlalchemy import Column, String, Integer, Float, Text, ForeignKey
+from protk.db.types.analysis import FormantBurg, FormantSL
 
-    
 class FormantBurgParser(object):
     
-    def __init__(self, *args, **kwargs):
-        self.file = file
+    def __init__(self, f):
+        self.file = f
         self.formants = []
     
-    def parse(self):
+    def parse(self, af):
         f = open(self.file)
         
         header = []
@@ -37,18 +37,18 @@ class FormantBurgParser(object):
                 band = float(f.readline())
                 formants.append((freq,band))
             
-            self.formants.append((x,x+xstep,intensity,formants))
+            self.formants.append(FormantBurg(af,x,x+xstep,intensity,formants))
             x+=xstep
             
         return self.formants
 
 class FormantSLParser(object):
     
-    def __init__(self, *args, **kwargs):
-        self.file = file
+    def __init__(self, f):
+        self.file = f
         self.formants = []
         
-    def parse(self):
+    def parse(self, af):
         f = open(self.file)
         
         header = []
@@ -61,6 +61,7 @@ class FormantSLParser(object):
             try:
                 freq = float(f.readline())
                 band = float(f.readline())
-                self.formants.append((freq,band))
+                self.formants.append(FormantSL(af, x, x+xstep, freq))
             except:
                 break
+        return self.formants
