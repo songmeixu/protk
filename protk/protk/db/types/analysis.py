@@ -11,6 +11,36 @@ from __init__ import get_metadata
 Base = declarative_base()
 Base.metadata = get_metadata()
 
+import numpy
+
+class AnalysisEntry(Base):
+    __tablename__ = "analysis_entries"
+    
+    id = Column(Integer,primary_key=True)
+    
+    prosody_entry = Column(Integer, ForeignKey("prosody_entries.id"))
+    
+    atype = Column(String(255))
+    
+    median = Column(Float)
+    mean = Column(Float)
+    stdev = Column(Float)
+    slope = Column(Float)
+    maxval = Column(Float)
+    minval = Column(Float)
+    
+    def __init__(self, values, xmin, xmax, atype, prosody_entry):
+        valarr = numpy.array(values)
+        
+        self.mean = float(numpy.mean(valarr))
+        self.median = float(numpy.median(valarr))
+        self.stdev = float(numpy.std(valarr))
+        self.minval = float(numpy.nanmin(valarr))
+        self.maxval = float(numpy.nanmax(valarr))
+        self.slope = (float(numpy.mean(numpy.array(values[-11:-1]))) - float(numpy.mean(numpy.array(values[0:10])))) / (xmax-xmin)
+        self.prosody_entry = prosody_entry.id
+        self.atype = atype
+
 class FormantBurg(Base):
     __tablename__ = "analysis_formant_burg"
     

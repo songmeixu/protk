@@ -11,6 +11,33 @@ from __init__ import get_metadata
 Base = declarative_base()
 Base.metadata = get_metadata()
 
+class ProsodyEntry(Base):
+    
+    __tablename__ = "prosody_entries"
+    
+    id = Column(Integer,primary_key=True)
+    
+    audio_file = Column(Integer,ForeignKey("audio_file.id"))
+    
+    ptype = Column(String(255))
+    
+    start = Column(Float)
+    end = Column(Float)
+    
+    data = Column(String(255))
+    
+    extdata = Column(Text)
+    
+    def __init__(self, audio_file, start, end, ptype, data, extdata):
+        self.audio_file = audio_file.id
+        self.start = start
+        self.end = end
+        self.data = str(data)
+        self.extdata = pickle.dumps(extdata)
+        
+    def __str__(self):
+        return "<word:%s>" % self.word
+
 class Word(Base):
     
     __tablename__ = "prosody_word"

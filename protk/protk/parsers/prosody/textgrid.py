@@ -9,7 +9,7 @@ protk.parsers.prosody.textgrid
 import re,os,sys
 
 from protk.db import DatabaseManager
-from protk.db.types.prosody import Word,Phone
+from protk.db.types.prosody import Word,Phone, ProsodyEntry
 from protk.db.types import AudioFile
 
 FOUND_ITEM = -1
@@ -19,9 +19,9 @@ MAXEMPTY = 10
 
 class TextGridParser(object):
     
-    def __init__(self,filename, prosody_collection):
+    def __init__(self,filename, audio_file):
         self.filename = filename
-        self.prosody_collection = prosody_collection
+        self.audio_file = audio_file
         self.contents = []
         
     def parse(self):
@@ -179,13 +179,17 @@ class TextGridParser(object):
                 spl = [i.strip() for i in line.split('=')]
                 #print("[parser][txtgrid][item]["+label+"]> + Extra: '%s' = '%s'"%(str(spl[0]),str(spl[1])))
             if len(f) > 0: f.pop(0)
-            
+        """    
         if label.lower() == "word" and start != None and end != None and text != None:
-            w = Word(self.prosody_collection, start, end, text, extdata)
+            w = Word(self.audio_file, start, end, text, extdata)
             self.contents.append(w)
         elif label.lower() == "phone" and start != None and end != None and text != None:
-            p = Phone(self.prosody_collection, start, end, text, extdata)
+            p = Phone(self.audio_file, start, end, text, extdata)
             self.contents.append(p)
+        """
+        if start != None and end != None and text != None:
+            w = ProsodyEntry(self.audio_file, start, end, label, text, extdata)
+            self.contents.append(w)
         
         return found
 

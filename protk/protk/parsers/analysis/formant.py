@@ -37,7 +37,7 @@ class FormantBurgParser(object):
                 band = float(f.readline())
                 formants.append((freq,band))
             
-            self.formants.append(FormantBurg(af,x,x+xstep,intensity,formants))
+            self.formants.append((x,x+xstep,freq,band))
             x+=xstep
             
         return self.formants
@@ -58,10 +58,13 @@ class FormantSLParser(object):
         x = 0
         xstep = 0.00625
         while True:
-            try:
-                freq = float(f.readline())
-                band = float(f.readline())
-                self.formants.append(FormantSL(af, x, x+xstep, freq))
-            except:
-                break
-        return self.formants
+            fmts = []
+            for i in range(0,6):
+                
+                try:
+                    freq = float(f.readline())
+                    band = float(f.readline())
+                    fmts.append((x,x+xstep,freq))
+                except:
+                    return self.formants
+            self.formants.append(fmts)
