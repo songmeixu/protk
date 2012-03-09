@@ -34,6 +34,7 @@ class ProsodyEntry(Base):
         self.end = end
         self.data = str(data)
         self.extdata = pickle.dumps(extdata)
+        self.ptype = ptype
         
     def __str__(self):
         return "<word:%s>" % self.word

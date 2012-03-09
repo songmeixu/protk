@@ -30,7 +30,7 @@ class AnalysisEntry(Base):
     maxval = Column(Float)
     minval = Column(Float)
     
-    def __init__(self, values, xmin, xmax, atype, prosody_entry):
+    def __init__(self, values, xmin, xmax, atype, prosody_entry, times=None):
         valarr = numpy.array(values)
         rngarr = numpy.arange(len(valarr))
         
