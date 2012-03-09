@@ -127,11 +127,12 @@ class PraatAnalysisLoader(object):
                 
                 for i in range(0,6):
                     entries = [z[i][2] for z in fmtvals[start_index:end_index] if len(z) > i]
-                    ae = AnalysisEntry(entries, s, e, "f%d" % (i), word)
+                    if len(entries)!= 0:
+                        ae = AnalysisEntry(entries, s, e, "f%d" % (i), word)
+                        
+                        #print "f%d:"%(i), ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index, duration
                     
-                    #print "f%d:"%(i), ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index, duration
-                
-                    db_session.add(ae)
+                        db_session.add(ae)
             db_session.commit()
             
         
@@ -155,11 +156,12 @@ class PraatAnalysisLoader(object):
                 end_index = int(e/0.008)
                 
                 entries = intensities[start_index:end_index]
-                ae = AnalysisEntry(entries, s, e, "intensity", word)
-                
-                #print "intensity", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
-                
-                db_session.add(ae)
+                if len(entries) != 0:
+                    ae = AnalysisEntry(entries, s, e, "intensity", word)
+                    
+                    #print "intensity", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
+                    
+                    db_session.add(ae)
             
             db_session.commit()
         
@@ -183,11 +185,12 @@ class PraatAnalysisLoader(object):
                 end_index = int(e/0.02)
                 
                 entries = intensities[start_index:end_index]
-                ae = AnalysisEntry(entries, s, e, "shimmer_local", word)
-                
-                print "shimmer_local", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
-                
-                db_session.add(ae)
+                if len(entries) != 0:
+                    ae = AnalysisEntry(entries, s, e, "shimmer_local", word)
+                    
+                    print "shimmer_local", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
+                    
+                    db_session.add(ae)
             
             db_session.commit()
         

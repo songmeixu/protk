@@ -12,6 +12,7 @@ Base = declarative_base()
 Base.metadata = get_metadata()
 
 import numpy
+import numpy.linalg
 
 class AnalysisEntry(Base):
     __tablename__ = "analysis_entries"
@@ -31,13 +32,16 @@ class AnalysisEntry(Base):
     
     def __init__(self, values, xmin, xmax, atype, prosody_entry):
         valarr = numpy.array(values)
+        rngarr = numpy.arange(len(valarr))
         
         self.mean = float(numpy.mean(valarr))
         self.median = float(numpy.median(valarr))
         self.stdev = float(numpy.std(valarr))
         self.minval = float(numpy.nanmin(valarr))
         self.maxval = float(numpy.nanmax(valarr))
-        self.slope = (float(numpy.mean(numpy.array(values[-11:-1]))) - float(numpy.mean(numpy.array(values[0:10])))) / (xmax-xmin)
+        #self.slope = (float(numpy.mean(numpy.array(values[-11:-1]))) - float(numpy.mean(numpy.array(values[0:10])))) / (xmax-xmin)
+        slp = numpy.polyfit(rngarr, valarr, 1, full=False)
+        self.slope = float(slp[0])
         self.prosody_entry = prosody_entry.id
         self.atype = atype
 
