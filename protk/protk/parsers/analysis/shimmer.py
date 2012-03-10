@@ -26,9 +26,11 @@ class ShimmerLocalParser(object):
         # step through data 2 lines at a time
         for val in ls2:
             # append step start/end and pitch to list
-            aval = val.split(',')[2]
-            if aval == "--undefined--":
-                aval = 0
-            else: aval = float(aval)
-            self.shimmers.append(aval)
+            a = val.split(',')
+            aval = a[2]
+            try:
+                aval = float(aval)
+            except:
+                continue
+            self.shimmers.append((float(a[0]),aval))
         return self.shimmers

@@ -68,6 +68,7 @@ from protk.db.types.analysis import FormantBurg, FormantSL, AnalysisEntry
 from protk.parsers.analysis.formant import FormantBurgParser, FormantSLParser
 from protk.parsers.analysis.intensity import IntensityParser
 from protk.parsers.analysis.shimmer import ShimmerLocalParser
+from protk.parsers.analysis.pitch import PitchParser
  
 class PraatAnalysisLoader(object):
     
@@ -166,6 +167,8 @@ class PraatAnalysisLoader(object):
             db_session.commit()
         
         files = list_file_paths(self.directory, include=".ShimmerLocal")
+
+        print len(files)
         
         for f in files:
             af = db_session.query(AudioFile).filter(AudioFile.basename==noext_name(f))
@@ -184,17 +187,78 @@ class PraatAnalysisLoader(object):
                 start_index = int(s/0.02)
                 end_index = int(e/0.02)
                 
-                entries = intensities[start_index:end_index]
+                entries = [i[1] for i in intensities if i[0] > s and i[0] < e]
                 if len(entries) != 0:
-                    ae = AnalysisEntry(entries, s, e, "shimmer_local", word)
+                    ae = AnalysisEntry(entries, s, e, "shimmer", word)
                     
-                    print "shimmer_local", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
+                    print "shimmer", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
+                    
+                    db_session.add(ae)
+            
+            db_session.commit()
+         
+        files = list_file_paths(self.directory, include=".JitterLocal")
+
+        print len(files)
+        
+        for f in files:
+            af = db_session.query(AudioFile).filter(AudioFile.basename==noext_name(f))
+            if af.count() == 0:
+                print("[loader][analysis][shimmerlocal][load]> Ignoring shimmer file at '%s' because it has no corresponding audio file" % f)
+                continue
+                
+            else: af = af[0]
+            print("[loader][analysis][shimmerlocal][load]> Loaded audio file record for '%s'" % af.filename)
+            
+            intensities = ShimmerLocalParser(f).parse()
+            words = db_session.query(ProsodyEntry).filter(ProsodyEntry.audio_file==af.id)
+            print "loaded words"
+            for word in words:
+                s = word.start
+                e = word.end
+                start_index = int(s/0.02)
+                end_index = int(e/0.02)
+                
+                entries = [i[1] for i in intensities if i[0] > s and i[0] < e]
+                if len(entries) != 0:
+                    ae = AnalysisEntry(entries, s, e, "jitter", word)
+                    
+                    print "jitter", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
+                    
+                    db_session.add(ae)
+            
+            db_session.commit()
+
+        files = list_file_paths(self.directory, include=".Pitch")
+        
+        for f in files:
+            af = db_session.query(AudioFile).filter(AudioFile.basename==noext_name(f))
+            if af.count() == 0:
+                print("[loader][analysis][shimmerlocal][load]> Ignoring shimmer file at '%s' because it has no corresponding audio file" % f)
+                continue
+                
+            else: af = af[0]
+            print("[loader][analysis][shimmerlocal][load]> Loaded audio file record for '%s'" % af.filename)
+            
+            intensities = PitchParser(f).parse()
+            words = db_session.query(ProsodyEntry).filter(ProsodyEntry.audio_file==af.id)
+            for word in words:
+                s = word.start
+                e = word.end
+                start_index = int(s/0.02)
+                end_index = int(e/0.02)
+                
+                entries = [i[1] for i in intensities if i[0] > s and i[0] < e]
+                if len(entries) != 0:
+                    ae = AnalysisEntry(entries, s, e, "pitch", word)
+                    
+                    print "pitch", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
                     
                     db_session.add(ae)
             
             db_session.commit()
         
-        
+
     def load(self, db_session):
         self._load_formants(db_session)
         

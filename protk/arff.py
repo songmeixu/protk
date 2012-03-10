@@ -33,7 +33,6 @@ while True:
     if len(args) == 0:
         break
     arg = args.pop(0)
-    print arg
      
     if arg == "--audio":
         audio_path = normalize_dir_path(args.pop(0))
@@ -51,11 +50,29 @@ dbmgr.initialize_db([base_types,analysis,prosody])
 session = dbmgr.get_session()
 
 afs = session.query(AudioFile)
-for af in afs:
-    print af.filename
-    words = session.query(ProsodyEntry).filter(ProsodyEntry.ptype=="word").filter(ProsodyEntry.audio_file==af.id)
-    for w in words:
-        features = session.query(AnalysisEntry).filter(AnalysisEntry.prosody_entry==w.id)
-        print w.data
+#for af in afs:
+
+print "@RELATION wordfeatures"
+print
+print "@ATTRIBUTE   duration    numeric"
+print "@ATTRIBUTE   pitch       numeric"
+print "@ATTRIBUTE   intensity   numeric"
+print "@ATTRIBUTE   f1          numeric"
+print "@ATTRIBUTE   f2          numeric"
+print "@ATTRIBUTE   shimmer     numeric"
+print "@ATTRIBUTE   jitter      numeric"
+
+words = session.query(ProsodyEntry).filter(ProsodyEntry.ptype=="word")
+for w in words:
+    features = session.query(AnalysisEntry).filter(AnalysisEntry.prosody_entry==w.id)
+    if features.count() == 0:
+        continue
+    else:
+        fd = {}
         for f in features:
-            print f.atype, f.mean, f.median
+            fd[f.atype] = f
+
+        if not fd.has_key("pitch") or not fd.has_key("intensity") or not fd.has_key("f1") or not fd.has_key("f2") or not fd.has_key("shimmer") or not fd.has_key("jitter"):
+            continue
+
+        print "%f,%f,%f,%f,%f,%f,%f"%((w.end-w.start),fd["pitch"].mean,fd["intensity"].mean,fd["f1"].mean,fd["f2"].mean,fd["shimmer"].mean,fd["jitter"].mean)
