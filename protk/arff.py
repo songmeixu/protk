@@ -61,6 +61,9 @@ print "@ATTRIBUTE   f1          numeric"
 print "@ATTRIBUTE   f2          numeric"
 print "@ATTRIBUTE   shimmer     numeric"
 print "@ATTRIBUTE   jitter      numeric"
+print "@ATTRIBUTE   truth       string"
+print 
+print "@DATA"
 
 words = session.query(ProsodyEntry).filter(ProsodyEntry.ptype=="word")
 for w in words:
@@ -75,4 +78,4 @@ for w in words:
         if not fd.has_key("pitch") or not fd.has_key("intensity") or not fd.has_key("f1") or not fd.has_key("f2") or not fd.has_key("shimmer") or not fd.has_key("jitter"):
             continue
 
-        print "%f,%f,%f,%f,%f,%f,%f"%((w.end-w.start),fd["pitch"].mean,fd["intensity"].mean,fd["f1"].mean,fd["f2"].mean,fd["shimmer"].mean,fd["jitter"].mean)
+        print "%f,%f,%f,%f,%f,%f,%f,%s"%((w.end-w.start),fd["pitch"].mean,fd["intensity"].mean,fd["f1"].mean,fd["f2"].mean,fd["shimmer"].mean,fd["jitter"].mean,("YES" if w.data == "FILLEDPAUSE_um" or w.data == "FILLEDPAUSE_ah" else "NO"))
