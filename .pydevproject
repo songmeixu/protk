@@ -7,5 +7,6 @@
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/ProTK/src</path>
 <path>/ProTK/protk</path>
+<path>/ProTK/protk2</path>
 </pydev_pathproperty>
 </pydev_project>
