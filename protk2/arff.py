@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 arff.py : ARFF output script for ProTK 2
 """

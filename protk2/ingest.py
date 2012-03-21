@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 ingest.py : Data ingest script for ProTK 2
 """

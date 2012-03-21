@@ -51,7 +51,7 @@ or incomplete features still under development are in *italics*.
 
 Usage
 =====
-The scripts for ProTK are in the ``protk`` directory in the root of the
+The scripts for ProTK are in the ``protk2`` directory in the root of the
 distribution (this will be changed once the rewrite is complete).
 
 ``ingest.py``: Data ingest
@@ -63,8 +63,4 @@ Praat analysis scripts for the audio files.
 Options:
     
 * ``--audio``: **required** -- directory containing audio files
-* ``--truth``: directory containing truth textgrids
-* ``--train``: directory containing training textgrids
-* ``--script``: directory to which to output Praat scripts
-* ``--praatoutput``: directory to which to output Praat analysis data files
 
