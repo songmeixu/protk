@@ -60,7 +60,22 @@ distribution (this will be changed once the rewrite is complete).
 and audio files). It will parse the textgrids and then generate and run
 Praat analysis scripts for the audio files.
 
-Options:
-    
+Options
+~~~~~~~
+
+General options:
+
 * ``--audio``: **required** -- directory containing audio files
+* ``--textgrid``: directory containing textgrid files
+* ``--scriptdir``: directory to output generated Praat scripts to
+* ``--outputdir``: directory to output Praat analysis results to
+* ``--praat``: run praat analysis
+
+Feature extraction options:
+* ``--pitches``: load pitch features for all prosodic events
+* ``--intensities``: load intensity features for all prosodic events
+* ``--formants``: load formant features for all prosodic events
+* ``--shimmer``: load shimmer features for all prosodic events
+* ``--jitter``: load jitter features for all prosodic events
+
 

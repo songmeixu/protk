@@ -52,7 +52,7 @@ if opts.has_key("scriptdir"):
 if opts.has_key("outputdir"):
     output_dir = normalize_dir_path(opts["outputdir"])
 
-if not opts.has_key("noexec"):
+if opts.has_key("praat"):
     
     psr = PraatScriptRunner(audio_dir, script_dir, output_dir)
     psr.generate_scripts()
