@@ -57,13 +57,16 @@ for entry in entries:
         fd[f.atype] = f
     fd["duration"] = entry.end - entry.start
     #sfd["word"] = entry.data
+    if not fd.has_key("shimmer"): fd["shimmer"] = 0.0
+    if not fd.has_key("jitter"): fd["jitter"] = 0.0    
+    
     if not search:
         fd["truth"] = "YES" if entry.data == "FILLEDPAUSE_um" else "NO"
     else:
         for s in search:
             #print s.start, entry.start, entry.end, s.end, s.start-0.1 <= entry.start and s.end+0.1 >= entry.end
             
-            if s.start-0.1 <= entry.start and s.end+0.1 >= entry.end:
+            if s.start-0.1 <= entry.start and s.end+0.1 >= entry.end and s.audio_file == entry.audio_file:
                 fd["truth"] = "YES"
                 break
         if not fd.has_key("truth"): fd["truth"] = "NO"
