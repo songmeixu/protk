@@ -65,10 +65,10 @@ Options
 
 General options:
 
-* ``--audio``: **required** -- directory containing audio files
-* ``--textgrid``: directory containing textgrid files
-* ``--scriptdir``: directory to output generated Praat scripts to
-* ``--outputdir``: directory to output Praat analysis results to
+* ``--audio=<directory>``: **required** -- directory containing audio files
+* ``--textgrid=<directory>``: directory containing textgrid files
+* ``--scriptdir=<directory>``: directory to output generated Praat scripts to
+* ``--outputdir=<directory>``: directory to output Praat analysis results to
 * ``--praat``: run praat analysis
 
 Feature extraction options:
@@ -78,5 +78,18 @@ Feature extraction options:
 * ``--formants``: load formant features for all prosodic events
 * ``--shimmer``: load shimmer features for all prosodic events
 * ``--jitter``: load jitter features for all prosodic events
+* ``--framesize=<float>``: generate frames of specified size (in seconds) as
+  prosodic events for analysis.
 
+``arff.py``: ARFF generation
+----------------------------
+``arff.py`` is used to output ARFF feature files.
 
+Options
+~~~~~~~
+
+* ``--type``: type of prosodic event to use when generating the ARFF. If
+  not specified, loads all prosodic events.
+* ``--searchtier``, ``--searchfor``: check if the current prosodic event
+  under consideration occurs inside another event of a type specified by
+  ``--searchtier`` and data specified by ``--searchfor``. 
