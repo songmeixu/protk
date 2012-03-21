@@ -72,6 +72,7 @@ General options:
 * ``--praat``: run praat analysis
 
 Feature extraction options:
+
 * ``--pitches``: load pitch features for all prosodic events
 * ``--intensities``: load intensity features for all prosodic events
 * ``--formants``: load formant features for all prosodic events
