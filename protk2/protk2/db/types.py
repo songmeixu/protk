@@ -5,7 +5,7 @@ protk2.db.types : Database types for ProTK 2
 from sqlalchemy.ext.declarative import declarative_base
 import pickle
 from sqlalchemy import Column,Float,Integer,String,ForeignKey,Text
-from protk.fs.directory import noext_name
+from protk2.fs import noext_name
 
 Base = declarative_base()
 
@@ -91,3 +91,6 @@ class AnalysisEntry(Base):
         self.slope = float(slp[0])
         self.prosody_entry = prosody_entry.id
         self.atype = atype
+        
+def create_tables(engine):
+    Base.metadata.create_all(engine)

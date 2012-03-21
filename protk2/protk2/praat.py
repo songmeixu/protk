@@ -1,8 +1,7 @@
 """
 protk2.praat : Praat script execution engine
 """
-from protk.fs import get_filenames
-from protk.fs.directory import noext_name,list_files
+from protk2.fs import noext_name,list_files, get_filenames
 
 # Praat options
 C3N_PRAAT_PRAAT_OPTIONS = {
