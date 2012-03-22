@@ -198,7 +198,7 @@ def load_audio(db_session, directory, file_ext="wav"):
 def load_textgrids(db_session, directory, file_ext=["TextGrid","txtgrid"]):
     if not dir_exists(directory): return False
     
-    files = list_file_paths(directory, include=".txtgrid")
+    files = list_file_paths(directory, include=file_ext)
     
     for f in files:
         af = db_session.query(AudioFile).filter(AudioFile.basename==noext_name(f))
