@@ -67,7 +67,7 @@ def list_files(path,include=None,exclude=None,hidden=False,fullpaths=False):
     Return a list of files in the directory given by path
     """
     if not os.path.exists(path):
-        raise OSError("Nonexistent directory")
+        raise OSError("Nonexistent directory '%s'"%path)
     if not os.path.isdir(path):
         raise OSError("Path exists, but is not a directory")
 

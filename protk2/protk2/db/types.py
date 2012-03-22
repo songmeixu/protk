@@ -77,16 +77,23 @@ class AnalysisEntry(Base):
     maxval = Column(Float)
     minval = Column(Float)
     
-    def __init__(self, values, xmin, xmax, atype, prosody_entry, times=None):
+    def __init__(self, values, xmin, xmax, atype, prosody_entry, times=None, normalization=False):
         valarr = numpy.array(values)
         rngarr = numpy.arange(len(valarr))
+        
+        if normalization:
+            #self.slope = (float(numpy.mean(numpy.array(values[-11:-1]))) - float(numpy.mean(numpy.array(values[0:10])))) / (xmax-xmin)
+            zmean = float(numpy.mean(valarr))
+            zstdev = float(numpy.std(valarr))
+            # you can do this with numpy arrays. It's frickin' awesome.
+            valarr = (valarr-zmean)/zstdev
         
         self.mean = float(numpy.mean(valarr))
         self.median = float(numpy.median(valarr))
         self.stdev = float(numpy.std(valarr))
         self.minval = float(numpy.nanmin(valarr))
         self.maxval = float(numpy.nanmax(valarr))
-        #self.slope = (float(numpy.mean(numpy.array(values[-11:-1]))) - float(numpy.mean(numpy.array(values[0:10])))) / (xmax-xmin)
+        
         slp = numpy.polyfit(rngarr, valarr, 1, full=False)
         self.slope = float(slp[0])
         self.prosody_entry = prosody_entry.id

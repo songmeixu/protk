@@ -47,10 +47,15 @@ print audio_dir
 script_dir = audio_dir+"script/"
 output_dir = audio_dir+"output/"
 
+make_dirs(script_dir)
+make_dirs(output_dir)
+
 if opts.has_key("scriptdir"):
     script_dir = normalize_dir_path(opts["scriptdir"])
 if opts.has_key("outputdir"):
     output_dir = normalize_dir_path(opts["outputdir"])
+
+normalize = opts.has_key("normalize")
 
 if opts.has_key("praat"):
     
@@ -59,7 +64,7 @@ if opts.has_key("praat"):
     psr.run_scripts()
     
 if opts.has_key("formants"):
-    load_formant_sl(db_session, output_dir)
+    load_formant_sl(db_session, output_dir, normalize)
     
 if opts.has_key("shimmer"):
     load_shimmers(db_session, output_dir)
@@ -68,7 +73,7 @@ if opts.has_key("jitter"):
     load_jitters(db_session, output_dir)
     
 if opts.has_key("intensities"):
-    load_intensities(db_session, output_dir)
+    load_intensities(db_session, output_dir,normalize)
     
 if opts.has_key("pitches"):
-    load_pitches(db_session, output_dir)
+    load_pitches(db_session, output_dir,normalize)

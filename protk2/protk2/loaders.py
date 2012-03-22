@@ -8,7 +8,7 @@ from protk2.parsers import *
 from protk2.db.types import AnalysisEntry, ProsodyEntry, AudioFile
 from protk2.fs import *
 
-def load_formant_sl(db_session, directory, file_ext="FormantSL"):
+def load_formant_sl(db_session, directory, file_ext="FormantSL", normalize=False):
     files = list_file_paths(directory, include=file_ext)
     
     for f in files:
@@ -33,14 +33,14 @@ def load_formant_sl(db_session, directory, file_ext="FormantSL"):
             for i in range(0,6):
                 entries = [z[i][2] for z in fmtvals[start_index:end_index] if len(z) > i]
                 if len(entries)!= 0:
-                    ae = AnalysisEntry(entries, s, e, "f%d" % (i), word)
+                    ae = AnalysisEntry(entries, s, e, "f%d" % (i), word, normalize=normalize)
                     
                     #print "f%d:"%(i), ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index, duration
                 
                     db_session.add(ae)
         db_session.commit()
         
-def load_intensities(db_session, directory, file_ext="Intensity"):
+def load_intensities(db_session, directory, file_ext="Intensity", normalize=False):
     files = list_file_paths(directory, include=file_ext)
     
     for f in files:
@@ -63,7 +63,7 @@ def load_intensities(db_session, directory, file_ext="Intensity"):
             
             entries = intensities[start_index:end_index]
             if len(entries) != 0:
-                ae = AnalysisEntry(entries, s, e, "intensity", word)
+                ae = AnalysisEntry(entries, s, e, "intensity", word, normalize=normalize)
                 
                 #print "intensity", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
                 
@@ -71,7 +71,7 @@ def load_intensities(db_session, directory, file_ext="Intensity"):
         
         db_session.commit()
         
-def load_shimmers(db_session, directory, file_ext="ShimmerLocal"):
+def load_shimmers(db_session, directory, file_ext="ShimmerLocal", normalize=False):
     files = list_file_paths(directory, include=file_ext)
 
     print len(files)
@@ -96,7 +96,7 @@ def load_shimmers(db_session, directory, file_ext="ShimmerLocal"):
             
             entries = [i[1] for i in intensities if i[0] > s and i[0] < e]
             if len(entries) != 0:
-                ae = AnalysisEntry(entries, s, e, "shimmer", word)
+                ae = AnalysisEntry(entries, s, e, "shimmer", word, normalize=normalize)
                 
                 #print "shimmer", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
                 
@@ -104,7 +104,7 @@ def load_shimmers(db_session, directory, file_ext="ShimmerLocal"):
         
         db_session.commit()
 
-def load_jitters(db_session, directory, file_ext="JitterLocal"): 
+def load_jitters(db_session, directory, file_ext="JitterLocal", normalize=False): 
     files = list_file_paths(directory, include=file_ext)
 
     print len(files)
@@ -129,7 +129,7 @@ def load_jitters(db_session, directory, file_ext="JitterLocal"):
             
             entries = [i[1] for i in intensities if i[0] > s and i[0] < e]
             if len(entries) != 0:
-                ae = AnalysisEntry(entries, s, e, "jitter", word)
+                ae = AnalysisEntry(entries, s, e, "jitter", word, normalize=normalize)
                 
                 #print "jitter", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
                 
@@ -137,7 +137,7 @@ def load_jitters(db_session, directory, file_ext="JitterLocal"):
         
         db_session.commit()
 
-def load_pitches(db_session, directory, file_ext="Pitch"):
+def load_pitches(db_session, directory, file_ext="Pitch", normalize=False):
     
     files = list_file_paths(directory, include=".Pitch")
     
@@ -161,7 +161,7 @@ def load_pitches(db_session, directory, file_ext="Pitch"):
             
             entries = [i[1] for i in intensities if i[0] > s and i[0] < e]
             if len(entries) != 0:
-                ae = AnalysisEntry(entries, s, e, "pitch", word)
+                ae = AnalysisEntry(entries, s, e, "pitch", word, normalize=normalize)
                 
                 print "pitch", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
                 
