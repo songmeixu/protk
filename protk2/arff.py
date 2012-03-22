@@ -25,15 +25,22 @@ db_session = db.get_session()
 entries = None
 
 if opts.has_key("type"):
-    entries = db_session.query(ProsodyEntry).filter(ProsodyEntry.ptype==opts["type"])
+    entries = list(db_session.query(ProsodyEntry).filter(ProsodyEntry.ptype==opts["type"]))
 else:
-    entries = db_session.query(ProsodyEntry)
+    entries = list(db_session.query(ProsodyEntry))
     
-attributes = [("duration","NUMERIC"),
+attributes = [("ctxb_duration","NUMERIC"),
+              ("ctxb_pitch","NUMERIC"),
+              ("ctxb_f1","NUMERIC"),
+              ("ctxb_f2","NUMERIC"),
+              ("duration","NUMERIC"),
               ("pitch","NUMERIC"),
-              ("intensity","NUMERIC"),
               ("f1","NUMERIC"),
               ("f2","NUMERIC"),
+              ("ctxa_duration","NUMERIC"),
+              ("ctxa_pitch","NUMERIC"),
+              ("ctxa_f1","NUMERIC"),
+              ("ctxa_f2","NUMERIC"),
               #("shimmer","NUMERIC"),
               #("jitter","NUMERIC"),
               #("word","STRING"),
@@ -46,20 +53,44 @@ if opts.has_key("searchtier") and opts.has_key("searchfor"):
 else:
     search = False
 
+idx=0
 for entry in entries:
-    features = db_session.query(AnalysisEntry).filter(AnalysisEntry.prosody_entry==entry.id)
-    if features.count() == 0:
+    entry.features = db_session.query(AnalysisEntry).filter(AnalysisEntry.prosody_entry==entry.id)
+
+context_size=1
+if opts.has_key("context"):
+    context_size = int(opts["context"])
+
+idx = 0
+for entry in entries:
+    if entry.features.count() == 0:
         #print("No features.")
         continue
     #else:
         #print("%d features."%features.count())
     fd = {}
-    for f in features:
+    for f in entry.features:
         fd[f.atype] = f
+        
+    entry = entries[idx]
+    if idx > 0:
+        entry_b = entries[idx-1]
+    else: entry_b = entry
+    if idx+1 < len(entries):
+        entry_a = entries[idx+1]
+    else: entry_a = entry
+    
+    for f in entry_b.features:
+        fd["ctxb_"+f.atype] = f
+    for f in entry_a.features:
+        fd["ctxa_"+f.atype] = f
+    
     fd["duration"] = entry.end - entry.start
+    fd["ctxb_duration"] = entry_b.end - entry_b.start
+    fd["ctxa_duration"] = entry_a.end - entry_a.start
     #sfd["word"] = entry.data
-    if not fd.has_key("shimmer"): fd["shimmer"] = 0.0
-    if not fd.has_key("jitter"): fd["jitter"] = 0.0    
+    if not fd.has_key("shimmer"): fd["shimmer"] = "?"
+    if not fd.has_key("jitter"): fd["jitter"] = "?"   
     
     if not search:
         fd["truth"] = "YES" if entry.data == "FILLEDPAUSE_um" else "NO"
@@ -72,16 +103,18 @@ for entry in entries:
                 break
         if not fd.has_key("truth"): fd["truth"] = "NO"
     if not has_keys(fd,[i[0] for i in attributes]): 
-        #print("This attribute (id:%d) was not extracted for this element. Skipping." % entry.id)
+        print("This attribute (id:%d) was not extracted for this element. Skipping." % entry.id)
         pass
     else:
         vals = []
         for attr in [i[0] for i in attributes]:
             x = fd[attr]
             if type(x) is AnalysisEntry:
-                x = x.mean
+                x = x.mean if x.undefined == 0 else "?"
             vals.append(x)
         allvals.append(vals)
+        
+    idx = idx+1
         
 output = generate_arff("langmodel", attributes, allvals)
 for o in output:

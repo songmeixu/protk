@@ -65,7 +65,6 @@ def generate_framing(frame_size, window_size, db_session, audio_file):
         
 def has_keys(d,keys):
     for k in keys:
-        if not d.has_key(k):
-            print str(k)
+        if not d.has_key(k): 
             return False
     return True

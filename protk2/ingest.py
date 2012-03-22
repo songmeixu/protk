@@ -64,7 +64,7 @@ if opts.has_key("praat"):
     psr.run_scripts()
     
 if opts.has_key("formants"):
-    load_formant_sl(db_session, output_dir, normalize)
+    load_formant_sl(db_session, output_dir, normalize=normalize)
     
 if opts.has_key("shimmer"):
     load_shimmers(db_session, output_dir)
@@ -73,7 +73,7 @@ if opts.has_key("jitter"):
     load_jitters(db_session, output_dir)
     
 if opts.has_key("intensities"):
-    load_intensities(db_session, output_dir,normalize)
+    load_intensities(db_session, output_dir,normalize=normalize)
     
 if opts.has_key("pitches"):
-    load_pitches(db_session, output_dir,normalize)
+    load_pitches(db_session, output_dir,normalize=normalize)
