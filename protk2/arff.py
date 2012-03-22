@@ -51,7 +51,7 @@ subattributes = ["mean","median","stdev","minval","maxval","slope"]
 newattr = []
 
 for a in attributes:
-    if a[1] == "NUMERIC":
+    if a[1] == "NUMERIC" and a[0].find("duration") == -1:
         for s in subattributes:
             newattr.append((a[0]+"_"+s,"NUMERIC"))
     else:
