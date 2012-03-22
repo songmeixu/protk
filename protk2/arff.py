@@ -46,6 +46,17 @@ attributes = [("ctxb_duration","NUMERIC"),
               ("word","STRING"),
               ("truth","{YES,NO}"),]
 
+subattributes = ["mean","median","stdev","minval","maxval","slope"]
+
+newattr = []
+
+for a in attributes:
+    if a[1] == "NUMERIC":
+        for s in subattributes:
+            newattr.append((a[0]+"_"+s,"NUMERIC"))
+        
+print newattr
+
 allvals = []
 
 if opts.has_key("searchtier") and opts.has_key("searchfor"):
@@ -118,12 +129,17 @@ for entry in entries:
         for attr in [i[0] for i in attributes]:
             x = fd[attr]
             if type(x) is AnalysisEntry:
-                x = x.mean if x.undefined == 0 else "?"
-            vals.append(x)
+                #x = x.mean if x.undefined == 0 else "?"
+                for s in subattributes:
+                    vals.append(eval("x."+s))
+            else:
+                vals.append(x)
         allvals.append(vals)
         
     idx = idx+1
         
 output = generate_arff("langmodel", attributes, allvals)
-for o in output:
-    print o
+
+f = open("output.arff","w")
+
+f.writelines([i+"\n" for i in output])
