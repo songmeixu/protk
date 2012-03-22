@@ -54,6 +54,8 @@ for a in attributes:
     if a[1] == "NUMERIC":
         for s in subattributes:
             newattr.append((a[0]+"_"+s,"NUMERIC"))
+    else:
+        newattr.append(a)
         
 print newattr
 
@@ -138,7 +140,7 @@ for entry in entries:
         
     idx = idx+1
         
-output = generate_arff("langmodel", attributes, allvals)
+output = generate_arff("langmodel", newattr, allvals)
 
 f = open("output.arff","w")
 
