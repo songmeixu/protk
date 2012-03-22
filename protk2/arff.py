@@ -43,7 +43,7 @@ attributes = [("ctxb_duration","NUMERIC"),
               ("ctxa_f2","NUMERIC"),
               #("shimmer","NUMERIC"),
               #("jitter","NUMERIC"),
-              #("word","STRING"),
+              ("word","STRING"),
               ("truth","{YES,NO}"),]
 
 allvals = []
@@ -92,7 +92,7 @@ for entry in entries:
     fd["duration"] = entry.end - entry.start
     fd["ctxb_duration"] = entry_b.end - entry_b.start
     fd["ctxa_duration"] = entry_a.end - entry_a.start
-    #sfd["word"] = entry.data
+    fd["word"] = entry.data
     if not fd.has_key("shimmer"): fd["shimmer"] = "?"
     if not fd.has_key("jitter"): fd["jitter"] = "?"   
     
