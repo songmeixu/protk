@@ -14,7 +14,7 @@ from protk2.praat import *
 from protk2.util import *
 
 opts = parse_args()
-from config import CONFIG
+from protk2.config import CONFIG
 
 dbconf = CONFIG["database"]
 db = DatabaseManager(dbconf)
