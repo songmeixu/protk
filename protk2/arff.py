@@ -53,6 +53,10 @@ if opts.has_key("searchtier") and opts.has_key("searchfor"):
 else:
     search = False
 
+targets = ["filledpause_um","filledpause_ah"]
+if opts.has_key("targets"):
+    targets = opts["targets"].split(",")
+
 idx=0
 for entry in entries:
     entry.features = db_session.query(AnalysisEntry).filter(AnalysisEntry.prosody_entry==entry.id)
@@ -93,7 +97,11 @@ for entry in entries:
     if not fd.has_key("jitter"): fd["jitter"] = "?"   
     
     if not search:
-        fd["truth"] = "YES" if entry.data == "FILLEDPAUSE_um" else "NO"
+        found = False
+        for target in targets:
+            if entry.data == target:
+                found = True
+        fd["truth"] = "YES" if found else "NO"
     else:
         for s in search:
             #print s.start, entry.start, entry.end, s.end, s.start-0.1 <= entry.start and s.end+0.1 >= entry.end
