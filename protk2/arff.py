@@ -24,7 +24,7 @@ if opts.has_key("config"):
     if os.path.exists(opts["config"]):
         execfile(opts["config"])
 else:
-    import protk2.config
+    from protk2.config import *
 
 db = DatabaseManager(DATABASE)
 create_tables(db.engine)
