@@ -14,10 +14,9 @@ from protk2.praat import *
 from protk2.util import *
 
 opts = parse_args()
-from protk2.config import CONFIG
+from protk2.config import DATABASE
 
-dbconf = CONFIG["database"]
-db = DatabaseManager(dbconf)
+db = DatabaseManager(DATABASE)
 create_tables(db.engine)
 db_session = db.get_session()
 

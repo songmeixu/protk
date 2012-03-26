@@ -4,7 +4,6 @@ arff.py : ARFF output script for ProTK 2
 """
 
 import os,sys
-from config import DATABASE, ARFF_FEATURES, ARFF_SHOW_WORD
 from numpy.ctypeslib import ct
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from protk2.db.core import *
@@ -24,6 +23,8 @@ CONFIG = None
 if opts.has_key("config"):
     if os.path.exists(opts["config"]):
         execfile(opts["config"])
+else:
+    import protk2.config
 
 db = DatabaseManager(DATABASE)
 create_tables(db.engine)
@@ -57,7 +58,7 @@ for entry in entries:
     for f in fs:
         entry.features[f.atype] = f
 
-context_size=0
+context_size=ARFF_CONTEXT_SIZE
 if opts.has_key("context"):
     context_size = int(opts["context"])
    
