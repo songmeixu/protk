@@ -35,33 +35,6 @@ def merge_options(defaults, overrides):
         defaults[k] = v
         
     return defaults
-
-from protk2.db.types import ProsodyEntry
-
-def generate_framing(frame_size, window_size, db_session, audio_file):
-    
-    import wave
-    import contextlib
-    fname=audio_file.filename
-    with contextlib.closing(wave.open(fname,'r')) as f:
-        frames=f.getnframes()
-        rate=f.getframerate()
-        duration=frames/float(rate)
-        print duration
-
-    if window_size == None: window_size = 0
-    
-    x = 0.0
-    while x < duration:
-        # set xmin/xmax
-        xmin = x
-        xmax = x + frame_size + window_size
-        
-        # add entry to database
-        db_session.add(ProsodyEntry(audio_file, xmin, xmax, "frame", "", None))
-        
-        # advance x pointer
-        x = x + frame_size
         
 def has_keys(d,keys):
     for k in keys:
@@ -69,3 +42,10 @@ def has_keys(d,keys):
             print str(k)
             return False
     return True
+
+import numpy
+
+def moving_average(x,window_length=11):
+    s = numpy.r_[x[window_length-1:0:-1],x,x[-1:-window_length:-1]]
+    w=numpy.ones(window_length,'d')
+    return numpy.convolve(w/w.sum(),s,mode='valid')

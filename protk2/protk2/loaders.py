@@ -167,7 +167,7 @@ def load_pitches(db_session, directory, file_ext="Pitch", normalize=False):
             
             entries = [i[1] for i in intensities if i[0] > s and i[0] < e]
             if len(entries) != 0:
-                ae = AnalysisEntry(entries, s, e, "pitch", word, normalize=normalize)
+                ae = AnalysisEntry(entries, s, e, "pitch", word, normalize=normalize, smooth=True)
                 
                 print "pitch", ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index
                 

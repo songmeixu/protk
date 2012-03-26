@@ -6,6 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 import pickle
 from sqlalchemy import Column,Float,Integer,String,ForeignKey,Text
 from protk2.fs import noext_name
+from protk2.util import moving_average
 
 Base = declarative_base()
 
@@ -79,10 +80,14 @@ class AnalysisEntry(Base):
     
     undefined = Column(Integer)
     
-    def __init__(self, values, xmin, xmax, atype, prosody_entry, times=None, normalize=False, undefined=False):
+    def __init__(self, values, xmin, xmax, atype, prosody_entry, times=None, normalize=False, smooth=False, undefined=False):
         if not undefined:
             valarr = numpy.array(values)
             rngarr = numpy.arange(len(valarr))
+            
+            if smooth:
+                valarr = moving_average(valarr)
+                rngarr = numpy.arange(len(valarr))
             
             if normalize:
                 #self.slope = (float(numpy.mean(numpy.array(values[-11:-1]))) - float(numpy.mean(numpy.array(values[0:10])))) / (xmax-xmin)
@@ -107,5 +112,33 @@ class AnalysisEntry(Base):
             self.atype = atype
             self.undefined = 1
         
+    def get_dict(self):
+        return {'mean':self.mean,'median':self.median,'stdev':self.stdev,'slope':self.slope,'maxval':self.maxval,'minval':self.minval} if self.undefined == 0 else {'mean':"?",'median':"?",'stdev':"?",'slope':"?",'maxval':"?",'minval':"?"}
+        
 def create_tables(engine):
     Base.metadata.create_all(engine)
+
+def generate_framing(frame_size, window_size, db_session, audio_file):
+    
+    import wave
+    import contextlib
+    fname=audio_file.filename
+    with contextlib.closing(wave.open(fname,'r')) as f:
+        frames=f.getnframes()
+        rate=f.getframerate()
+        duration=frames/float(rate)
+        print duration
+
+    if window_size == None: window_size = 0
+    
+    x = 0.0
+    while x < duration:
+        # set xmin/xmax
+        xmin = x
+        xmax = x + frame_size + window_size
+        
+        # add entry to database
+        db_session.add(ProsodyEntry(audio_file, xmin, xmax, "frame", "", None))
+        
+        # advance x pointer
+        x = x + frame_size
