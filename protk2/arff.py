@@ -15,6 +15,7 @@ from protk2.praat import *
 from protk2.util import *
 from protk2.arff import *
 from protk2.config import *
+import pickle
 
 opts = parse_args()
 
@@ -61,108 +62,20 @@ for entry in entries:
 context_size=ARFF_CONTEXT_SIZE
 if opts.has_key("context"):
     context_size = int(opts["context"])
-   
-   
-# THIS IS OLD CODE FOR DEVELOPMENT REFERENCE ONLY 
-"""
-attributes = [("ctxb_duration","NUMERIC"),
-              ("ctxb_pitch","NUMERIC"),
-              ("ctxb_f1","NUMERIC"),
-              ("ctxb_f2","NUMERIC"),
-              ("duration","NUMERIC"),
-              ("pitch","NUMERIC"),
-              ("f1","NUMERIC"),
-              ("f2","NUMERIC"),
-              ("ctxa_duration","NUMERIC"),
-              ("ctxa_pitch","NUMERIC"),
-              ("ctxa_f1","NUMERIC"),
-              ("ctxa_f2","NUMERIC"),
-              #("shimmer","NUMERIC"),
-              #("jitter","NUMERIC"),
-              ("word","STRING"),
-              ("truth","{YES,NO}"),]
 
-subattributes = ["mean","median","stdev","minval","maxval","slope"]
+excludes = []
+if opts.has_key("exclude"):
+    excludes = opts["exclude"].lower().split(',')
 
-newattr = []
-
-for a in attributes:
-    if a[1] == "NUMERIC" and a[0].find("duration") == -1:
-        for s in subattributes:
-            newattr.append((a[0]+"_"+s,"NUMERIC"))
-    else:
-        newattr.append(a)
-        
-#print newattr
-
-allvals = []
-idx = 0
-for entry in entries:
-    if entry.features.count() == 0:
-        #print("No features.")
-        continue
-    #else:
-        #print("%d features."%features.count())
-    fd = {}
-    for f in entry.features:
-        fd[f.atype] = f
-        
-    entry = entries[idx]
-    if idx > 0:
-        entry_b = entries[idx-1]
-    else: entry_b = entry
-    if idx+1 < len(entries):
-        entry_a = entries[idx+1]
-    else: entry_a = entry
-    
-    for f in entry_b.features:
-        fd["ctxb_"+f.atype] = f
-    for f in entry_a.features:
-        fd["ctxa_"+f.atype] = f
-    
-    fd["duration"] = entry.end - entry.start
-    fd["ctxb_duration"] = entry_b.end - entry_b.start
-    fd["ctxa_duration"] = entry_a.end - entry_a.start
-    fd["word"] = entry.data
-    if not fd.has_key("shimmer"): fd["shimmer"] = "?"
-    if not fd.has_key("jitter"): fd["jitter"] = "?"   
-    
-    if not search:
-        found = False
-        for target in targets:
-            if entry.data.lower() == target:
-                found = True
-        fd["truth"] = "YES" if found else "NO"
-    else:
-        for s in search:
-            #print s.start, entry.start, entry.end, s.end, s.start-0.1 <= entry.start and s.end+0.1 >= entry.end
-            
-            if s.start-0.1 <= entry.start and s.end+0.1 >= entry.end and s.audio_file == entry.audio_file:
-                fd["truth"] = "YES"
-                break
-        if not fd.has_key("truth"): fd["truth"] = "NO"
-    if not has_keys(fd,[i[0] for i in attributes]): 
-        print("This attribute (id:%d) was not extracted for this element. Skipping." % entry.id)
-        pass
-    else:
-        vals = []
-        for attr in [i[0] for i in attributes]:
-            x = fd[attr]
-            if type(x) is AnalysisEntry:
-                #x = x.mean if x.undefined == 0 else "?"
-                for s in subattributes:
-                    vals.append(eval("x."+s))
-            else:
-                vals.append(x)
-        allvals.append(vals)
-        
-    idx = idx+1
-"""
+passthrough = []
+if opts.has_key("passthrough"):
+    passthrough = [i.split(":") for i in opts["passthrough"].split(',')]
 
 entry_rows = []
 
 idx = 0
 for i in range(len(entries)):
+
     ctx_entries = [None]*(context_size*2+1)
     if i < context_size:
         for z in range((context_size-i)):
@@ -192,6 +105,8 @@ def build_element(element,conf):
     return output
     
 arff_rows = []
+
+import base64
     
 for r in range(len(entry_rows)):
     row = []
@@ -200,6 +115,20 @@ for r in range(len(entry_rows)):
             row = row + build_element(ele,ARFF_FEATURES)
     
     if ARFF_SHOW_WORD and entries[r] != None: row.append(entries[r].data.strip(""" \t"',.""").replace("'","_") if entries[r].data != "" else "BLANK")
+
+    if len(passthrough) != 0:
+        for pt in passthrough:
+            pt = pt[0]
+            if entries[r].extdata != None and entries[r].extdata != "":
+            #    try:
+                    if pickle.loads(unicode(entries[r].extdata)).has_key(pt):
+                        row.append(pickle.loads(unicode(entries[r].extdata))[pt])
+                    else:
+                        row.append("?")
+            #    except:
+                    #row.append("?")
+            else:
+                row.append("?")
     
     if entries[r] != None:
         if not search:
@@ -222,7 +151,11 @@ for r in range(len(entry_rows)):
             if y: row.append("YES")
             else: row.append("NO")
     
-    arff_rows.append(row)
+    if entries[r].data.lower() not in excludes:
+        arff_rows.append(row)
+
+if len(excludes) != 0:
+    print("Excluded %d items from ARFF out of total %d items (%f%%)"%(len(entries)-len(arff_rows),len(entries),1.0-float(len(arff_rows))/float(len(entries))))
 
 # Build attribute list
 attributes = []
@@ -232,6 +165,10 @@ for i in range(context_size*2+1):
             attributes.append(("ctx%d_%s_%s"%(i,feat,attr),"NUMERIC"))
             
 if ARFF_SHOW_WORD: attributes.append(("word","STRING"))
+if len(passthrough) != 0:
+    for pt in passthrough:
+        attributes.append((pt[0],pt[1]))
+
 attributes.append(("truth","{YES,NO}"))
 
 al = len(attributes)

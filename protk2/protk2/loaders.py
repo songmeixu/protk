@@ -38,6 +38,10 @@ def load_formant_sl(db_session, directory, file_ext="FormantSL", normalize=False
                     #print "f%d:"%(i), ae.mean, ae.median, ae.stdev, ae.slope, " / ", s, e, " / ", start_index, end_index, duration
                 
                     db_session.add(ae)
+            f2f1_entries = [z[1][2]/z[0][2] for z in fmtvals[start_index:end_index] if len(z) > i]
+            ae_f2f1 = AnalysisEntry(f2f1_entries,s,e,"f2f1",word,normalize=normalize)
+            db_session.add(ae_f2f1)
+
         db_session.commit()
         
 def load_intensities(db_session, directory, file_ext="Intensity", normalize=False):

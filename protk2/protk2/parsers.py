@@ -171,7 +171,8 @@ class TextGridParser(object):
                 end = float(line.split('=')[1])
                 #print("[parser][txtgrid][item]["+label+"]> + End time: %f" % end)
             elif len(line.split('=')) == 2:
-                spl = [i.strip() for i in line.split('=')]
+                spl = [i.strip().strip('!') for i in line.split('=')]
+                extdata[spl[0]] = spl[1]
                 #print("[parser][txtgrid][item]["+label+"]> + Extra: '%s' = '%s'"%(str(spl[0]),str(spl[1])))
             if len(f) > 0: f.pop(0)
         """    
