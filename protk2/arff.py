@@ -20,31 +20,31 @@ import pickle
 opts = parse_args()
 
 CONFIG = None
-
 if opts.has_key("config"):
     if os.path.exists(opts["config"]):
         execfile(opts["config"])
-else:
-    from protk2.config import *
 
+# Create a database connection (and possibly the database itself)
 db = DatabaseManager(DATABASE)
 create_tables(db.engine)
 db_session = db.get_session()
 
+# Jusssst in case (force of habit from Java/C)
 entries = None
-
 if opts.has_key("type"):
     entries = list(db_session.query(ProsodyEntry).filter(ProsodyEntry.ptype==opts["type"]))
 else:
     entries = list(db_session.query(ProsodyEntry))
     
-
+# Check for search options
 if opts.has_key("searchtier") and opts.has_key("searchfor"):
     sf = opts['searchfor'].split(',')
+    # Build query for search options
     base_q = """db_session.query(ProsodyEntry).filter(ProsodyEntry.ptype==opts["searchtier"])"""
+    sres = []
     for s in sf:
-        base_q = base_q + """.filter(ProsodyEntry.data=="%s")"""%s
-    search = eval(base_q)
+        sres = sres + list(eval(base_q + """.filter(ProsodyEntry.data=="%s")"""%s))
+    search = sres
 else:
     search = False
 
