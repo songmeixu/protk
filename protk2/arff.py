@@ -120,13 +120,11 @@ for r in range(len(entry_rows)):
         for pt in passthrough:
             pt = pt[0]
             if entries[r].extdata != None and entries[r].extdata != "":
-            #    try:
-                    if pickle.loads(unicode(entries[r].extdata)).has_key(pt):
-                        row.append(pickle.loads(unicode(entries[r].extdata))[pt])
-                    else:
-                        row.append("?")
-            #    except:
-                    #row.append("?")
+                ex = str2dict(entries[r].extdata)
+                if ex.has_key(pt):
+                    row.append(ex[pt])
+                else:
+                    row.append("?")
             else:
                 row.append("?")
     

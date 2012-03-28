@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 import pickle
 from sqlalchemy import Column,Float,Integer,String,ForeignKey,Text
 from protk2.fs import noext_name
-from protk2.util import moving_average
+from protk2.util import moving_average,dict2str,str2dict
 import base64
 
 Base = declarative_base()
@@ -51,7 +51,7 @@ class ProsodyEntry(Base):
         self.start = start
         self.end = end
         self.data = str(data)
-        self.extdata = str(pickle.dumps(extdata))
+        self.extdata = dict2str(extdata)
         self.ptype = ptype
         
     def __str__(self):
