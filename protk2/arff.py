@@ -70,6 +70,10 @@ if opts.has_key("exclude"):
 passthrough = []
 if opts.has_key("passthrough"):
     passthrough = [i.split(":") for i in opts["passthrough"].split(',')]
+    for pt in passthrough:
+        if len(pt) != 2:
+            print("ERROR> --passthrough expects parameters in a comma-separated param-name:arff-type format")
+            exit(1)
 
 entry_rows = []
 
