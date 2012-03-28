@@ -43,5 +43,5 @@ setup(name='ProTK',
       author_email='okam0013@umn.edu',
       url='https://github.com/oko/protk',
       packages=['protk2','protk2.db'],
-      data_files=[(install_dir,['arff.py','config.py','ingest.py'])]
+      data_files=[(install_dir,['arff.py','ingest.py'])]
      )
