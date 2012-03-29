@@ -12,9 +12,43 @@ from protk2.parsers import *
 from protk2.fs import *
 from protk2.praat import *
 from protk2.util import *
+from protk2.config import *
 
 opts = parse_args()
-from protk2.config import DATABASE
+
+if len(sys.argv) == 1 or opts.has_key("help"):
+    print("""``ingest.py`` is used to ingest all relevant data for a fileset (textgrids and audio files). It will parse the textgrids and then generate and run Praat analysis scripts for the audio files. It will also run feature extraction for the desired units of analysis (UOAs) (e.g. phonemes, words, speech segments, etc.) extracted from the text grids. 
+
+
+    Options
+    -------
+    General options:
+
+    **WARNING:** directory paths **must** be absolute, otherwise Praat will not properly find files.
+
+    * ``--audio=<directory>``: **required** -- directory containing audio files
+    * ``--textgrid=<directory>``: directory containing textgrid files
+    * ``--praat``: run praat analysis
+    * ``--scriptdir=<directory>``: directory to output generated Praat scripts to
+    * ``--outputdir=<directory>``: directory to output Praat analysis results to
+
+    Feature extraction options:
+
+    **WARNING:** feature extraction will only work if you are running or already have run the script with ``--audio``, ``--textgrid``, and ``--praat``.
+
+    * ``--pitches``: load pitch features for all prosodic events
+    * ``--intensities``: load intensity features for all prosodic events
+    * ``--formants``: load formant features for all prosodic events
+    * ``--shimmer``: load shimmer features for all prosodic events
+    * ``--jitter``: load jitter features for all prosodic events
+    * ``--framesize=<float>``: generate frames of specified size (in seconds) as
+      prosodic events for analysis. You must specify the size when using this option.
+      * ``--windowsize=<float>``: overlap the frames by the specified size (in seconds). You must specify the size when using this option.""")
+    exit(1)
+
+if opts.has_key("config"):
+    if os.path.exists(opts["config"]):
+        execfile(opts["config"])
 
 db = DatabaseManager(DATABASE)
 create_tables(db.engine)

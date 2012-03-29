@@ -51,6 +51,7 @@ def moving_average(x,window_length=11):
     return numpy.convolve(w/w.sum(),s,mode='valid')
 
 def dict2str(d):
+    if d == None: return ""
     return ','.join([':'.join([str(k),str(v)]) for k,v in d.iteritems()])
 
 def str2dict(s):
