@@ -34,7 +34,8 @@ def parse_args():
 opts = parse_args()
 
 if opts.has_key("tools-prefix"):
-    install_dir=opts["prefix"]
+    install_dir=opts["tools-prefix"]
+
 
 setup(name='ProTK',
       version='0.3.0',
