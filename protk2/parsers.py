@@ -357,3 +357,38 @@ class SilenceParser(object):
             else: self.soundings.append((s,e))
             
         return {'silences': self.silences, 'soundings': self.soundings}
+
+def lolmerge(lol):
+    out = []
+    for l in lol:
+        out = out + l 
+    return out 
+
+def parse_htk(filename):
+    f = open(filename)
+    words = []
+    phones = []
+    
+    lines = f.readlines()
+
+    cword = None
+    wstart = -1
+
+    for line in lines:
+        parts = line.split()
+        syl = lolmerge([i.split("+") for i in parts[2].split("-")])
+        if len(syl) == 3:
+            syl = syl[1]
+        else: syl = syl[0]
+        phones.append((parts[0],parts[1],syl))
+        if len(parts) > 4:
+            if cword != None:
+                words.append((wstart,parts[0],cword))
+                cword = parts[4]
+                wstart = parts[0]
+            else:
+                cword = parts[4]
+                wstart = parts[0]
+
+    return (words,phones,)
+
