@@ -16,6 +16,10 @@ def generate_arff(relation_name, attributes, values):
     
     output.append("@DATA")
     for val in values:
+        for x in range(len(val)):
+            if val[x] == None:
+                val[x] = '?'
+
         if len(val) != len(attributes):
             print "Ignoring row with only %d values for %d attributes" % (len(val),len(attributes))
             continue

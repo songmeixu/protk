@@ -28,22 +28,8 @@ if len(sys.argv) == 1 or opts.has_key("help"):
 
     * ``--audio=<directory>``: **required** -- directory containing audio files
     * ``--textgrid=<directory>``: directory containing textgrid files
-    * ``--praat``: run praat analysis
-    * ``--scriptdir=<directory>``: directory to output generated Praat scripts to
-    * ``--outputdir=<directory>``: directory to output Praat analysis results to
-
-    Feature extraction options:
-
-    **WARNING:** feature extraction will only work if you are running or already have run the script with ``--audio``, ``--textgrid``, and ``--praat``.
-
-    * ``--pitches``: load pitch features for all prosodic events
-    * ``--intensities``: load intensity features for all prosodic events
-    * ``--formants``: load formant features for all prosodic events
-    * ``--shimmer``: load shimmer features for all prosodic events
-    * ``--jitter``: load jitter features for all prosodic events
-    * ``--framesize=<float>``: generate frames of specified size (in seconds) as
-      prosodic events for analysis. You must specify the size when using this option.
-      * ``--windowsize=<float>``: overlap the frames by the specified size (in seconds). You must specify the size when using this option.""")
+    * ``--framesize=<float>``: generate speech event frames that are <float> seconds long
+    * ``--windowsize=<float>``: use with ``--framesize`` to overlap the frames by <float> seconds""")
     exit(1)
 
 if opts.has_key("config"):
@@ -74,39 +60,3 @@ if opts.has_key("framesize"):
 if opts.has_key("textgrid"):
     txtgrd_dir = opts["textgrid"]
     load_textgrids(db_session, txtgrd_dir)
-
-print audio_dir
-
-script_dir = audio_dir+"script/"
-output_dir = audio_dir+"output/"
-
-make_dirs(script_dir)
-make_dirs(output_dir)
-
-if opts.has_key("scriptdir"):
-    script_dir = normalize_dir_path(opts["scriptdir"])
-if opts.has_key("outputdir"):
-    output_dir = normalize_dir_path(opts["outputdir"])
-
-normalize = opts.has_key("normalize")
-
-if opts.has_key("praat"):
-    
-    psr = PraatScriptRunner(audio_dir, script_dir, output_dir)
-    psr.generate_scripts()
-    psr.run_scripts()
-    
-if opts.has_key("formants"):
-    load_formant_sl(db_session, output_dir, normalize=normalize)
-    
-if opts.has_key("shimmer"):
-    load_shimmers(db_session, output_dir)
-    
-if opts.has_key("jitter"):
-    load_jitters(db_session, output_dir)
-    
-if opts.has_key("intensities"):
-    load_intensities(db_session, output_dir,normalize=normalize)
-    
-if opts.has_key("pitches"):
-    load_pitches(db_session, output_dir,normalize=normalize)

@@ -16,3 +16,5 @@ ARFF_FEATURES = {
 
 ARFF_SHOW_WORD = False
 ARFF_CONTEXT_SIZE = 0
+
+ARFF_CLASSIFY_COMMAND = """java -cp weka.jar weka.classifiers.functions.SMO -l %s -T %s -p 0 > %s"""

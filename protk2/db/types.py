@@ -94,6 +94,7 @@ class AnalysisEntry(Base):
                 #self.slope = (float(numpy.mean(numpy.array(values[-11:-1]))) - float(numpy.mean(numpy.array(values[0:10])))) / (xmax-xmin)
                 zmean = float(numpy.mean(valarr))
                 zstdev = float(numpy.std(valarr))
+                print ">>> ZSTDEV=%f"%zstdev
                 # you can do this with numpy arrays. It's frickin' awesome.
                 valarr = (valarr-zmean)/zstdev
             
@@ -136,10 +137,10 @@ def generate_framing(frame_size, window_size, db_session, audio_file):
     while x < duration:
         # set xmin/xmax
         xmin = x
-        xmax = x + frame_size + window_size
+        xmax = x + frame_size
         
         # add entry to database
         db_session.add(ProsodyEntry(audio_file, xmin, xmax, "frame", "", None))
         
         # advance x pointer
-        x = x + frame_size
+        x = x + frame_size - window_size

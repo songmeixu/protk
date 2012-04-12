@@ -33,6 +33,7 @@ if len(sys.argv) == 1 or opts.has_key("help"):
     * ``--targets=<comma-separated-list-of-strings>``: The content of prosodic events to look for to determine YES/NO values
     * ``--context=<integer>``: the number of units of analysis (i.e., words or phonemes) before and after the current unit of analysis to output as context
     * ``--exclude=<comma-separated-list-of-strings>``: The content of prosodic events to use as exclusion criteria
+    * ``--test=<model-file>``: Set the truth values of all output to YES for creating testing ARFFs and use the model specified by <model-file> as an input to the classifier
     """)
     exit()
 
@@ -148,7 +149,9 @@ for af in afs:
                     row.append("?")
         
         if entries[r] != None:
-            if not search:
+            if opts.has_key("test"):
+                row.append("YES")
+            elif not search:
                 y = False
                 for t in targets:
                     if t.lower() == entries[r].data.lower():
@@ -199,6 +202,15 @@ attributes.append(("truth","{YES,NO}"))
 
 output = generate_arff("langmodel", attributes, arff_rows)
 
-f = open("output.arff","w")
+fname = "output.arff"
+if opts.has_key("outfile"): fname = opts["outfile"]
 
-f.writelines([i+"\n" for i in output])
+f = open(fname,"w")
+    
+f.writelines([i+"\n" for i in output]+["\n"])
+f.close()
+
+if opts.has_key("test"):
+    cmd = ARFF_CLASSIFY_COMMAND%(opts["test"],fname,fname+".classres")
+    print cmd
+    os.system(cmd)
