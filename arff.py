@@ -168,7 +168,6 @@ for af in afs:
                 middle = (entries[r].start+entries[r].end)/2
                 y = False
                 sf = [i for i in search if i.audio_file == af.id]
-                print len(sf), len(s)
                 for s in sf: 
                     y = False
                     if middle >= s.start and middle <= s.end:
