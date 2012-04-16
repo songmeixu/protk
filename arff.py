@@ -77,6 +77,11 @@ if opts.has_key("passthrough"):
 afs = db_session.query(AudioFile)
 all_arff_rows = []
 for af in afs:
+    
+    print """
+    AUDIO FILE: ID #%d, in %s
+    """ % (af.id,af.filename)
+
     # Jusssst in case (force of habit from Java/C)
     entries = None
     if opts.has_key("target-tier"):
@@ -162,9 +167,12 @@ for af in afs:
             else:
                 middle = (entries[r].start+entries[r].end)/2
                 y = False
-                for s in search:
+                sf = [i for i in search if i.audio_file == af.id]
+                print len(sf), len(s)
+                for s in sf: 
                     y = False
                     if middle >= s.start and middle <= s.end:
+                        print af.id, i.audio_file
                         print s.start,middle,s.end
                         y = True
                         break
