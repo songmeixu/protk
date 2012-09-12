@@ -33,6 +33,7 @@ ingested, and output an ARFF file of the features extracted.
 New Features
 ============
 The primary new features of the rewritten ProTK are:
+
 * **Arbitrary Units of Analysis:** ProTK supports the generation of arbitrary
     units of analysis, specifically frames of specified length (frame size) and
     overlap (window size).
