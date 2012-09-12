@@ -60,3 +60,9 @@ The primary new features of the rewritten ProTK are:
   very small subset of features specific to filled-pause detection. This ARFF
   generator allowed us to process a large (200+ files) dataset in one hour
   instead of 20 or more.
+
+Interspeech 2012
+================
+This software was presented at Interspeech 2012 in Portland, Oregon. Demonstration
+code is available at <https://github.com/oko/protk-demo>. *Note that the demo code
+does not include the audio for testing (tested against RIT/UPenn's TRAINS corpus).*
