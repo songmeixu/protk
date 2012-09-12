@@ -14,6 +14,11 @@ Current:
 * Jacob Okamoto (UMN Computer Science)
 * Serguei Pakhomov (UMN Pharmacy)
 
+Advising:
+
+* Elizabeth Shriberg (Microsoft)
+* Andreas Stolcke (Microsoft)
+
 Past:
 
 * Thomas Christie (UMN Cognitive Science)
