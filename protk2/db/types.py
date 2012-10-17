@@ -52,7 +52,7 @@ class ProsodyEntry(Base):
         self.end = end
         self.data = str(data)
         self.extdata = dict2str(extdata)
-        self.ptype = ptype
+        self.ptype = ptype.lower()
         
     def __str__(self):
         return "<word:%s>" % self.word
